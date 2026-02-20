@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>materia.</title>
+    <meta name="theme-color" content="#FFFFFF" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+               sans: ['Outfit', 'Inter', 'sans-serif'],
+               display: ['Space Grotesk', 'sans-serif'],
+               serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+               mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              ink: {
+                DEFAULT: '#1A1A1A',
+                lighter: '#3D3D3D',
+                dim: '#6B6B6B',
+                ghost: '#9A9A9A',
+              },
+              rule: {
+                DEFAULT: '#E4E4E4',
+                light: '#F0F0F0',
+              },
+              accent: {
+                DEFAULT: '#1B4F72',
+                blue: '#2E86AB',
+                pale: '#EEF4F8',
+                rule: '#C8DCE9',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --sw: 280px;
+        --hh: 56px;
+      }
+      html, body {
+        height: 100%;
+        overscroll-behavior-y: none;
+        background-color: #FAFAFA;
+      }
+      body {
+        font-family: 'Outfit', sans-serif;
+        color: #1A1A1A;
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.7;
+      }
+      #root {
+        height: 100%;
+      }
+      
+      /* MedRef Specific Components */
+      .med-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        border: 1px solid #E4E4E4;
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: 0.85rem;
+      }
+      .med-table th {
+        background: #1A1A1A;
+        color: white;
+        text-align: left;
+        padding: 0.6rem 1rem;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .med-table td {
+        padding: 0.6rem 1rem;
+        border-bottom: 1px solid #F0F0F0;
+      }
+      .med-table tr:last-child td { border-bottom: none; }
+      .med-table tr:nth-child(even) { background: #FAFAFA; }
+
+      .sidebar-scroll::-webkit-scrollbar { width: 3px; }
+      .sidebar-scroll::-webkit-scrollbar-thumb { background: #E4E4E4; border-radius: 3px; }
+      
+      /* Hide scrollbar for clean UI */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0?deps=react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?deps=react@18.2.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?deps=react@18.2.0,react-dom@18.2.0",
+    "framer-motion": "https://esm.sh/framer-motion@11.0.8?deps=react@18.2.0,react-dom@18.2.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.344.0?deps=react@18.2.0",
+    "@google/genai": "https://esm.sh/@google/genai@0.1.1",
+    "react-markdown": "https://esm.sh/react-markdown@9.0.1?deps=react@18.2.0",
+    "remark-gfm": "https://esm.sh/remark-gfm@4.0.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
