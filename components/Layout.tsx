@@ -45,6 +45,29 @@ const Layout: React.FC<LayoutProps> = ({
   const [isTopicsDrawerOpen, setIsTopicsDrawerOpen] = useState(false); // Navbar button triggers this
   const [isTOCDrawerOpen, setIsTOCDrawerOpen] = useState(false); // Floating button triggers this
 
+  const handleTOCClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute('href');
+    if (!href) return;
+
+    const sectionId = href.slice(1);
+    const section = document.getElementById(sectionId);
+    const mainScroller = document.querySelector('main');
+
+    if (section && mainScroller) {
+        const mainTop = mainScroller.getBoundingClientRect().top;
+        const sectionTop = section.getBoundingClientRect().top;
+        const offset = sectionTop - mainTop;
+        
+        mainScroller.scrollTo({
+            top: mainScroller.scrollTop + offset - 70, // Navbar height offset
+            behavior: 'smooth'
+        });
+    }
+    
+    setIsTOCDrawerOpen(false);
+  };
+
   return (
     <div className="h-full w-full bg-[#FAFAFA] flex flex-col relative overflow-hidden font-sans">
       
@@ -170,7 +193,7 @@ const Layout: React.FC<LayoutProps> = ({
                     <a 
                       key={sec.id}
                       href={`#${sec.id}`}
-                      onClick={() => setIsTOCDrawerOpen(false)}
+                      onClick={handleTOCClick}
                       className={`flex items-center gap-3 px-6 py-3 text-[13px] border-l-2 transition-all ${
                         activeSection === sec.id 
                         ? 'bg-accent-pale text-accent-blue border-accent-blue font-semibold' 
