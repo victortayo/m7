@@ -54,8 +54,8 @@ const Layout: React.FC<LayoutProps> = ({
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/')}
         >
-          <h1 className="font-serif text-2xl font-bold text-accent tracking-tight">
-            materia<span className="text-accent-blue">.</span>
+          <h1 className="font-display text-xl font-bold text-accent tracking-tight">
+            materea<span className="text-accent-blue">.</span>
           </h1>
         </div>
         

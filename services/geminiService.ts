@@ -3,77 +3,50 @@ import { GoogleGenAI, Type } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateStudyNote = async (specialtyName: string, topicTitle: string): Promise<string> => {
-  try {
-    const prompt = `
-      You are a world-class senior medical educator specializing in the Nigerian clinical curriculum. 
-      Create a high-yield, comprehensive, and professional study note for: "${topicTitle}" within "${specialtyName}".
+  // To use your own notes, you can provide the content directly here.
+  // The structure should follow the Markdown format expected by the application.
+  const userGeneratedNote = `
+# HERO_START
+Title: ${topicTitle}
+Subtitle: ${specialtyName} | User Generated Note
+Definition: [Your concise 2-sentence definition here]
+Stats: 
+- Peak Incidence: [Your Value]
+- M:F Ratio: [Your Value]
+- Mortality: [Your Value]
+- Perforation Rate: [Your Value]
+- Critical Threshold: [Your Value]
+# HERO_END
 
-      Follow this EXACT structure using Markdown:
+## Aetiology & Pathophysiology
+[Your details on causes and pathophysiology here]
 
-      # HERO_START
-      Title: ${topicTitle}
-      Subtitle: ${specialtyName} | Emergency | High Yield
-      Definition: [Provide a concise 2-sentence definition]
-      Stats: 
-      - Peak Incidence: [Value]
-      - M:F Ratio: [Value]
-      - Mortality: [Value]
-      - Perforation Rate: [Value]
-      - Critical Threshold: [Value]
-      # HERO_END
+## History
+[Your details on history taking here]
 
-      ## Aetiology & Pathophysiology
-      [Detail causes and a step-by-step pathophysiological cascade]
+## Physical Examination
+[Your details on physical examination signs here]
 
-      ## History
-      [Focus on cardinal symptoms, migration of pain, and variants]
-      > [INFO] Note on variant positions (e.g., retrocaecal, pelvic).
+## Investigations
+[Your details on lab and imaging investigations here]
 
-      ## Physical Examination
-      [Detail specific signs like McBurney's, Rovsing's, etc.]
+## Scoring Systems (if applicable)
+[Your scoring system details here]
 
-      ## Investigations
-      [Laboratory and Imaging]
-      | Feature | Description/Points |
-      | :--- | :--- |
-      | FBC | Leucocytosis with shift to left |
-      | CRP | Elevated |
-      | USS | Non-compressible appendix >6mm |
+## Differential Diagnosis
+[Your differential diagnosis here]
 
-      ## Scoring Systems (if applicable, e.g., Alvarado)
-      [Include a scoring table if relevant]
+## Management
+[Your management plan here]
 
-      ## Differential Diagnosis
-      [Categorize into General, Gynaecological, and Paediatric]
+## Complications
+[Your list of complications here]
 
-      ## Management
-      [Step-by-step: Initial resuscitation -> Definitive surgical or conservative paths]
-
-      ## Complications
-      [Early and Late]
-
-      ## Key Points & Clinical Pearls
-      [List of 10+ must-know points]
-      > [PEARL] A classic surgical aphorism or high-yield clinical tip.
-
-      IMPORTANT: Use bold text for clinical signs and gold standard tests. 
-      Tailor everything to the Nigerian context (e.g., endemic diseases, local first-line antibiotics).
-      Keep it very professional, organized, and clean.
-    `;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: prompt,
-      config: {
-        systemInstruction: "You are a professional medical reference creator. Your output is highly structured, using clear headers, tables, and callouts to maximize readability and retention for clinical students.",
-      }
-    });
-
-    return response.text || "No content generated.";
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Failed to generate study note.");
-  }
+## Key Points & Clinical Pearls
+[Your list of 10+ key points here]
+  `;
+  
+  return Promise.resolve(userGeneratedNote);
 };
 
 export interface QuizQuestion {
