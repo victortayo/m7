@@ -197,14 +197,21 @@ const NoteDetail: React.FC = () => {
           {view === 'note' ? (
             <motion.div key="note" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {/* Hero */}
-              <section id="overview" className="section-anchor bg-ink rounded-xl p-8 mb-6 shadow-xl relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/20 to-transparent pointer-events-none" />
-                <h1 className="font-serif text-3xl md:text-5xl font-bold text-white mb-6 leading-none tracking-tight">
-                  {hero.title}
-                </h1>
-                <p className="text-white/70 text-[14px] leading-relaxed max-w-xl font-light">
-                  {hero.content}
-                </p>
+              <section id="overview" className="section-anchor bg-slate-900 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-xl shadow-slate-200/50 group">
+                <div className="relative z-10">
+                  <h1 className="font-display text-3xl md:text-5xl font-bold text-white mb-3 leading-tight">
+                    {hero.title}
+                  </h1>
+                  <p className="text-slate-400 font-medium max-w-xl leading-relaxed">
+                    {hero.content}
+                  </p>
+                </div>
+                {/* Decorative Blobs */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay opacity-20 blur-3xl transform translate-x-1/3 -translate-y-1/3" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 rounded-full mix-blend-overlay opacity-10 blur-3xl transform -translate-x-1/3 translate-y-1/3" />
+
+                {/* Subtle Pattern */}
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-soft-light" />
               </section>
 
               {/* Actions */}
@@ -231,7 +238,7 @@ const NoteDetail: React.FC = () => {
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${openSections[s.id] ? 'bg-accent-blue text-white' : 'bg-slate-100 text-slate-500'}`}>
                         {s.icon}
                       </div>
-                      <h2 className="font-serif text-xl font-bold text-ink flex-1">{s.title}</h2>
+                      <h2 className="font-display text-xl font-bold text-ink flex-1">{s.title}</h2>
                       <ChevronDown size={20} className={`text-slate-400 transition-transform duration-300 ${openSections[s.id] ? 'rotate-180' : ''}`} />
                     </div>
                     
@@ -286,7 +293,7 @@ const NoteDetail: React.FC = () => {
               <button onClick={() => setView('note')} className="flex items-center gap-2 text-slate-500 hover:text-ink text-xs font-bold uppercase tracking-widest mb-6 transition-colors">
                 <ArrowLeft size={16} /> Return to Note
               </button>
-              <h1 className="text-3xl font-serif font-bold text-ink mb-10">Practice: {topic?.title}</h1>
+              <h1 className="text-3xl font-display font-bold text-ink mb-10">Practice: {topic?.title}</h1>
               {quizLoading ? (
                 <div className="py-20 text-center"><RefreshCw className="animate-spin text-accent-blue inline-block mb-3" size={32} /><p className="text-xs font-mono text-slate-400">Generating High-Yield Questions...</p></div>
               ) : (
@@ -309,7 +316,7 @@ const QuizItem: React.FC<{ question: QuizQuestion; index: number }> = ({ questio
   return (
     <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
       <div className="text-[10px] font-bold text-accent-blue uppercase tracking-widest mb-3">Question {index + 1}</div>
-      <h3 className="font-serif text-xl font-bold text-ink mb-6">{question.question}</h3>
+      <h3 className="font-display text-xl font-bold text-ink mb-6">{question.question}</h3>
       <div className="space-y-3">
         {question.options.map((opt, i) => {
           let style = "border-slate-200 bg-white hover:border-accent-blue/30";
