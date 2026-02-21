@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Save, RefreshCw, BookmarkCheck, GraduationCap, 
+  Save, RefreshCw, BookmarkCheck, 
   CheckCircle, XCircle, ChevronDown, Info, AlertTriangle, Lightbulb,
   FileText, Activity, ClipboardList, Thermometer, ShieldCheck, HelpCircle,
   ArrowLeft
@@ -217,7 +217,7 @@ const NoteDetail: React.FC = () => {
               {/* Actions */}
               <div className="flex items-center gap-3 mb-10 overflow-x-auto no-scrollbar pb-2">
                 <button onClick={loadQuiz} className="flex items-center gap-2 px-5 py-2.5 bg-accent-blue text-white rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-accent-blue/20 shrink-0 hover:scale-[1.02] transition-transform">
-                  <GraduationCap size={16} /> Practice
+                  <HelpCircle size={16} /> Practice
                 </button>
                 <button onClick={handleSave} className={`px-5 py-2.5 rounded-full border flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 ${isSaved ? 'bg-green-50 border-green-200 text-green-700' : 'bg-white border-slate-200 text-slate-500 hover:text-ink'}`}>
                   {isSaved ? <BookmarkCheck size={16} /> : <Save size={16} />} {isSaved ? 'Saved' : 'Save Note'}
@@ -265,12 +265,66 @@ const NoteDetail: React.FC = () => {
                                   </li>
                                 ),
                                 blockquote: ({node, children, ...props}) => {
-                                  const text = String(children?.[1]?.props?.children || children?.[0]?.props?.children || '');
-                                  const isWarn = text.includes('[WARN]') || text.includes('[DANGER]');
-                                  const isPearl = text.includes('[PEARL]');
+                                  let textContent = '';
+                                  React.Children.forEach(children, child => {
+                                    if (React.isValidElement(child) && child.props.children) {
+                                      textContent += React.Children.toArray(child.props.children).join('');
+                                    }
+                                  });
+
+                                  const isPearl = textContent.includes('[PEARL]');
+                                  const isWarn = textContent.includes('[WARN]') || textContent.includes('[DANGER]');
+
+                                  const cleanChildren = (tagToRemove: RegExp) => {
+                                    return React.Children.map(children, child => {
+                                        if (React.isValidElement(child) && child.props.children) {
+                                            const newPChildren = React.Children.map(child.props.children, pChild => {
+                                                if (typeof pChild === 'string') {
+                                                    return pChild.replace(tagToRemove, '').trim();
+                                                }
+                                                return pChild;
+                                            });
+                                            return React.cloneElement(child, { ...child.props, children: newPChildren });
+                                        }
+                                        return child;
+                                    });
+                                  }
+
+                                  if (isPearl) {
+                                    return (
+                                      <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white">
+                                        <div className="p-5">
+                                          <div className="flex gap-3 items-center mb-3">
+                                            <div className="text-amber-500">
+                                              <Lightbulb size={18} />
+                                            </div>
+                                            <h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4>
+                                          </div>
+                                          <div className="text-[14px] leading-relaxed italic text-amber-900/90">
+                                            {cleanChildren(/\[PEARL\]/g)}
+                                          </div>
+                                        </div>
+                                        <div className="px-5 pb-3">
+                                          <div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div>
+                                        </div>
+                                      </div>
+                                    )
+                                  }
+
+                                  if (isWarn) {
+                                    return (
+                                      <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}>
+                                        <div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div>
+                                        <div className="text-[14px] leading-relaxed italic">
+                                          {cleanChildren(/\[(WARN|DANGER)\]/g)}
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+
                                   return (
-                                    <div className={`my-6 p-5 rounded-xl flex gap-4 items-start ${isWarn ? 'bg-red-50 border border-red-100 text-red-900' : isPearl ? 'bg-amber-50 border-l-4 border-l-amber-400 text-slate-800' : 'bg-slate-50 border border-slate-100 text-slate-600'}`}>
-                                      <div className="shrink-0 mt-0.5">{isWarn ? <AlertTriangle size={18} className="text-red-500"/> : isPearl ? <Lightbulb size={18} className="text-amber-500"/> : <Info size={18} className="text-accent-blue"/>}</div>
+                                    <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}>
+                                      <div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div>
                                       <div className="text-[14px] leading-relaxed italic">{children}</div>
                                     </div>
                                   );

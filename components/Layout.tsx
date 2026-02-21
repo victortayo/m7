@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, GraduationCap, Home, Menu, X, Circle, AlignJustify, List, ChevronRight, FileText } from 'lucide-react';
+import { Search, Book, Home, Menu, X, Circle, AlignJustify, List, ChevronRight, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarNav {
@@ -208,7 +208,7 @@ const Layout: React.FC<LayoutProps> = ({
                   <div className="mx-6 my-6 h-[1px] bg-rule" />
                   <div className="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Tools</div>
                   <button onClick={() => navigate('/qbank')} className="w-full flex items-center gap-3 px-6 py-3 text-[13px] text-slate-600 hover:text-ink hover:bg-slate-50 text-left">
-                    <GraduationCap size={16} className="opacity-60" />
+                    <Book size={16} className="opacity-60" />
                     Practice Questions
                   </button>
                 </nav>
@@ -251,7 +251,7 @@ const Layout: React.FC<LayoutProps> = ({
         <nav className="flex-none md:hidden w-full z-[100] bg-white border-t border-rule h-14 flex items-center justify-around px-2 shadow-2xl safe-pb">
           <NavButton icon={<Home size={20} />} label="Home" active={location.pathname === '/'} onClick={() => navigate('/')} />
           <NavButton icon={<Search size={20} />} label="Search" active={location.pathname === '/search'} onClick={() => navigate('/search')} />
-          <NavButton icon={<GraduationCap size={20} />} label="Qbank" active={location.pathname === '/qbank'} onClick={() => navigate('/qbank')} />
+          <NavButton icon={<Book size={20} />} label="Qbank" active={location.pathname === '/qbank'} onClick={() => navigate('/qbank')} />
         </nav>
       )}
     </div>

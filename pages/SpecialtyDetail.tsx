@@ -38,22 +38,35 @@ const SpecialtyDetail: React.FC = () => {
 
   return (
     <Layout title={specialty.name} showBack>
-      <div className="space-y-6">
+      <div className="space-y-8">
         
         {/* Banner */}
-        <div className="bg-slate-100/80 rounded-2xl p-6 flex items-center gap-5 border border-slate-200/60 shadow-inner">
-          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-slate-700 shadow-sm border border-slate-100">
-            <BookOpen size={24} />
-          </div>
-          <div>
-            <h2 className="font-bold text-lg text-slate-900 font-display">
-              {specialty.topics.length} High-Yield Topics
-            </h2>
-            <p className="text-sm text-slate-500">
-              Select a topic to start reading.
-            </p>
-          </div>
-        </div>
+        <section className="bg-slate-900 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-xl shadow-slate-200/50 group">
+           <div className="relative z-10 flex items-center gap-6">
+             {/* Inverted Icon: White BG, Dark Text */}
+             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 shrink-0">
+                <BookOpen className="text-slate-900" size={32} />
+             </div>
+             
+             {/* Inverted Text: White Text */}
+             <div>
+               <h2 className="text-3xl md:text-4xl font-bold text-white font-display leading-tight mb-2">
+                 {specialty.name}
+               </h2>
+               
+               <p className="text-slate-400 font-medium max-w-xs leading-relaxed">
+                 {specialty.topics.length} High-Yield Topics. Select a topic to start reading.
+               </p>
+             </div>
+           </div>
+           
+           {/* Decorative Blobs */}
+           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay opacity-20 blur-3xl transform translate-x-1/3 -translate-y-1/3" />
+           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 rounded-full mix-blend-overlay opacity-10 blur-3xl transform -translate-x-1/3 translate-y-1/3" />
+           
+           {/* Subtle Pattern */}
+           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-soft-light" />
+        </section>
 
         {/* Categories and Topics */}
         <div className="space-y-8">

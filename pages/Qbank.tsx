@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, BookOpen, ChevronRight, Zap } from 'lucide-react';
+import { GraduationCap, Book, ChevronRight, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../components/Layout';
 import { SavedNote } from '../types';
@@ -44,7 +44,7 @@ const Qbank: React.FC = () => {
           {notes.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-100 border-dashed text-center">
               <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3 text-slate-300">
-                <BookOpen size={20} />
+                <Book size={20} />
               </div>
               <p className="text-slate-900 font-medium mb-1">No topics saved yet</p>
               <p className="text-xs text-slate-500 max-w-xs mx-auto mb-4">
