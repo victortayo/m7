@@ -18,6 +18,14 @@ Stats:
 - Critical Threshold: N/A
 # HERO_END
 
+## What You Need to Learn
+*   Understand the underlying causes and the step-by-step process of how appendicitis develops.
+*   Be able to take a focused history and perform a relevant physical examination to suspect appendicitis.
+*   Know which investigations to order, how to interpret them, and understand their limitations.
+*   Be familiar with the main differential diagnoses to consider in a patient with right iliac fossa pain.
+*   Outline the management principles for uncomplicated and complicated appendicitis.
+*   Recognize the potential complications of the condition and its treatment.
+
 ## Aetiology & Pathophysiology
 **AETIOLOGY**
 *   Lymphoid hyperplasia (60%) - associated with viral infections (measles, mononucleosis), Crohn's disease
@@ -142,6 +150,11 @@ Associated symptoms:
 *   Do not delay analgesia - it does not mask clinical signs.
 *   Higher perforation risk in extremes of age and delayed presentation.
 > [PEARL] "When in doubt, take it out!" - The risk of negative appendicectomy is less than the risk of perforation from delayed surgery.
+
+## Practice Essay Questions
+1.  A 22-year-old male presents with a 24-hour history of abdominal pain, which started in the periumbilical region and has now moved to the right iliac fossa. Discuss the differential diagnosis and outline your management plan.
+2.  Describe the pathophysiology of acute appendicitis and explain how this relates to the clinical features of the condition.
+3.  Discuss the role of scoring systems and imaging in the diagnosis of acute appendicitis.
   `;
   
   return Promise.resolve(userGeneratedNote);
@@ -154,10 +167,10 @@ export interface QuizQuestion {
   explanation: string;
 }
 
-export const generateQuiz = async (specialtyName: string, topicTitle: string): Promise<QuizQuestion[]> => {
+export const generateQuiz = async (specialtyName: string, topicTitle: string, questionCount: number = 5): Promise<QuizQuestion[]> => {
   try {
     const prompt = `
-      Generate 5 high-yield multiple-choice questions (MCQs) for medical students regarding "${topicTitle}" in "${specialtyName}".
+      Generate ${questionCount} high-yield multiple-choice questions (MCQs) for medical students regarding "${topicTitle}" in "${specialtyName}".
       Focus on clinical scenarios, diagnosis, and management relevant to the Nigerian context.
     `;
 

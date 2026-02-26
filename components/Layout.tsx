@@ -128,7 +128,7 @@ const Layout: React.FC<LayoutProps> = ({
                 className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[130] shadow-2xl flex flex-col"
               >
                 <div className="p-5 border-b border-rule flex items-center justify-between bg-slate-50/50">
-                  <h2 className="font-serif text-xl font-bold text-ink">Browse Specialty</h2>
+                  <h2 className="font-display text-xl font-bold text-ink">Browse Specialty</h2>
                   <button onClick={() => setIsTopicsDrawerOpen(false)} className="p-2 hover:bg-slate-200 rounded-full text-slate-500">
                     <X size={20} />
                   </button>
@@ -175,7 +175,7 @@ const Layout: React.FC<LayoutProps> = ({
                 <div className="p-6 border-b border-rule bg-slate-50/50 flex justify-between items-start">
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-widest text-accent-blue mb-1">Current Topic</div>
-                    <div className="font-serif text-xl font-bold text-ink leading-tight mb-2">{sidebarContent.topicName}</div>
+                    <div className="font-display text-xl font-bold text-ink leading-tight mb-2">{sidebarContent.topicName}</div>
                     <div className="flex flex-wrap gap-1.5">
                       {sidebarContent.meta?.map((m, i) => (
                         <span key={i} className="text-[9px] font-semibold bg-white border border-slate-200 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">{m}</span>
