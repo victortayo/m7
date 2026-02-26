@@ -6,6 +6,7 @@ import SpecialtyDetail from './pages/SpecialtyDetail';
 import NoteDetail from './pages/NoteDetail';
 import Qbank from './pages/Qbank';
 import Search from './pages/Search';
+import Downloads from './pages/Downloads';
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
@@ -18,6 +19,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/note/:specialtyId/:topicId" element={<NoteDetail />} />
         <Route path="/qbank" element={<Qbank />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/downloads" element={<Downloads />} />
       </Routes>
     </AnimatePresence>
   );

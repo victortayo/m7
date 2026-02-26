@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, Book, Home, Menu, X, Circle, AlignJustify, List, ChevronRight, FileText } from 'lucide-react';
+import { Search, Book, Home, Menu, X, Circle, AlignJustify, List, ChevronRight, FileText, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarNav {
@@ -250,8 +250,9 @@ const Layout: React.FC<LayoutProps> = ({
       {showBottomNav && !sidebarContent && (
         <nav className="flex-none md:hidden w-full z-[100] bg-white border-t border-rule h-14 flex items-center justify-around px-2 shadow-2xl safe-pb">
           <NavButton icon={<Home size={20} />} label="Home" active={location.pathname === '/'} onClick={() => navigate('/')} />
-          <NavButton icon={<Search size={20} />} label="Search" active={location.pathname === '/search'} onClick={() => navigate('/search')} />
+          <NavButton icon={<Search size={20} />} label="Search" active={location.pathname === '/search'} onClick={() => navigate('/search' )} />
           <NavButton icon={<Book size={20} />} label="Qbank" active={location.pathname === '/qbank'} onClick={() => navigate('/qbank')} />
+          <NavButton icon={<Download size={20} />} label="Downloads" active={location.pathname === '/downloads'} onClick={() => navigate('/downloads')} />
         </nav>
       )}
     </div>
