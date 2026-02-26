@@ -41,9 +41,8 @@ const Layout: React.FC<LayoutProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   
-  // State for the two drawers
-  const [isTopicsDrawerOpen, setIsTopicsDrawerOpen] = useState(false); // Navbar button triggers this
-  const [isTOCDrawerOpen, setIsTOCDrawerOpen] = useState(false); // Floating button triggers this
+  const [isTopicsDrawerOpen, setIsTopicsDrawerOpen] = useState(false);
+  const [isTOCDrawerOpen, setIsTOCDrawerOpen] = useState(false);
 
   const handleTOCClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -60,7 +59,7 @@ const Layout: React.FC<LayoutProps> = ({
         const offset = sectionTop - mainTop;
         
         mainScroller.scrollTo({
-            top: mainScroller.scrollTop + offset - 70, // Navbar height offset
+            top: mainScroller.scrollTop + offset - 70, 
             behavior: 'smooth'
         });
     }
@@ -71,7 +70,6 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="h-full w-full bg-[#FAFAFA] flex flex-col relative overflow-hidden font-sans">
       
-      {/* Navbar: White, Glassmorphism, Dark Text */}
       <header className="flex-none w-full z-[110] bg-white/80 backdrop-blur-md border-b border-slate-200/60 h-14 flex items-center px-4 md:px-7 gap-5 shadow-sm">
         <div 
           className="flex items-center gap-2 cursor-pointer"
@@ -84,7 +82,6 @@ const Layout: React.FC<LayoutProps> = ({
         
         <div className="hidden md:block h-5 w-[1px] bg-slate-200" />
         
-        {/* Breadcrumb / Status (Desktop) */}
         <div className="hidden md:flex items-center gap-2 text-[11px] text-slate-400 uppercase tracking-widest font-medium">
           {title}
         </div>
@@ -97,7 +94,6 @@ const Layout: React.FC<LayoutProps> = ({
             <Search size={20} />
           </button>
           
-          {/* Note Page Toggle 1: Topics Menu */}
           {topicsList && (
             <button 
               onClick={() => setIsTopicsDrawerOpen(true)}
@@ -111,7 +107,6 @@ const Layout: React.FC<LayoutProps> = ({
 
       <div className="flex-1 flex overflow-hidden relative">
         
-        {/* TOPICS DRAWER (Left Sidebar Overlay) */}
         <AnimatePresence>
           {isTopicsDrawerOpen && topicsList && (
             <>
@@ -156,7 +151,6 @@ const Layout: React.FC<LayoutProps> = ({
           )}
         </AnimatePresence>
 
-        {/* TOC DRAWER (Right Sidebar Overlay - Triggered by FAB) */}
         <AnimatePresence>
           {isTOCDrawerOpen && sidebarContent && (
             <>
@@ -217,18 +211,12 @@ const Layout: React.FC<LayoutProps> = ({
           )}
         </AnimatePresence>
 
-        {/* Desktop Sidebar (Optional - kept for larger screens if space permits, otherwise hidden based on requirements) 
-            The requirements emphasize toggle buttons. We will stick to the drawer model for simplicity and focus on mobile-first.
-        */}
-
-        {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto relative z-10 scroll-smooth bg-[#FAFAFA]">
           <div className="w-[92%] md:max-w-3xl mx-auto py-8 md:py-12">
             {children}
           </div>
         </main>
         
-        {/* Floating Button for TOC (Note Page Toggle 2) */}
         <AnimatePresence>
           {sidebarContent && !isTOCDrawerOpen && (
              <motion.button
@@ -245,24 +233,21 @@ const Layout: React.FC<LayoutProps> = ({
 
       </div>
 
-      {/* Mobile Bottom Nav - Only on non-note pages if we want to follow the 'focus' mode strictly, 
-          but usually apps keep nav. Layout props control this. */}
       {showBottomNav && !sidebarContent && (
         <nav className="flex-none md:hidden w-full z-[100] bg-white border-t border-rule h-14 flex items-center justify-around px-2 shadow-2xl safe-pb">
-          <NavButton icon={<Home size={20} />} label="Home" active={location.pathname === '/'} onClick={() => navigate('/')} />
-          <NavButton icon={<Search size={20} />} label="Search" active={location.pathname === '/search'} onClick={() => navigate('/search' )} />
-          <NavButton icon={<Book size={20} />} label="Qbank" active={location.pathname === '/qbank'} onClick={() => navigate('/qbank')} />
-          <NavButton icon={<Download size={20} />} label="Downloads" active={location.pathname === '/downloads'} onClick={() => navigate('/downloads')} />
+          <NavButton icon={<Home size={24} />} active={location.pathname === '/'} onClick={() => navigate('/')} />
+          <NavButton icon={<Search size={24} />} active={location.pathname === '/search'} onClick={() => navigate('/search')} />
+          <NavButton icon={<Book size={24} />} active={location.pathname === '/qbank'} onClick={() => navigate('/qbank')} />
+          <NavButton icon={<Download size={24} />} active={location.pathname === '/downloads'} onClick={() => navigate('/downloads')} />
         </nav>
       )}
     </div>
   );
 };
 
-const NavButton: React.FC<{ icon: React.ReactNode; label: string; active: boolean; onClick: () => void }> = ({ icon, label, active, onClick }) => (
-  <button onClick={onClick} className={`flex flex-col items-center gap-0.5 ${active ? 'text-accent-blue' : 'text-slate-400'}`}>
+const NavButton: React.FC<{ icon: React.ReactNode; active: boolean; onClick: () => void }> = ({ icon, active, onClick }) => (
+  <button onClick={onClick} className={`flex flex-col items-center justify-center h-full w-16 ${active ? 'text-accent-blue' : 'text-slate-400'}`}>
     {icon}
-    <span className="text-[9px] font-bold uppercase tracking-widest">{label}</span>
   </button>
 );
 
