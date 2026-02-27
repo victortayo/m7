@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bookmark, RefreshCw, BookmarkCheck, 
+  Bookmark, BookmarkCheck, 
   CheckCircle, XCircle, ChevronDown, Info, AlertTriangle, Lightbulb,
   FileText, Activity, ClipboardList, Thermometer, ShieldCheck, HelpCircle,
   ArrowLeft, Trophy
@@ -189,7 +189,7 @@ const NoteDetail: React.FC = () => {
   };
 
   if (loading) return (
-    <Layout title="Reference"><div className="flex flex-col items-center justify-center py-40 gap-4"><RefreshCw className="animate-spin text-accent-blue" size={32} /><p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Loading Content</p></div></Layout>
+    <Layout title="Reference"><div className="flex flex-col items-center justify-center py-40 gap-4"><p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Loading Content</p></div></Layout>
   );
 
   const renderContent = () => {
@@ -212,9 +212,6 @@ const NoteDetail: React.FC = () => {
               </button>
               <button onClick={handleSave} className={`px-5 py-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 ${isSaved ? 'bg-green-50 border-green-200 text-green-700' : 'bg-white border-slate-200 text-slate-500 hover:text-ink'}`}>
                 {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />} {isSaved ? 'Saved' : 'Save Note'}
-              </button>
-              <button onClick={() => loadNote(true)} className="p-2.5 rounded-full bg-white border border-slate-200 text-slate-400 hover:text-ink shrink-0 ml-auto">
-                <RefreshCw size={18} />
               </button>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl shadow-md ring-1 ring-black/5 overflow-hidden">
@@ -272,7 +269,7 @@ const NoteDetail: React.FC = () => {
         );
         case 'quiz_active':
           if (quizLoading || !quizData) {
-            return <div className="py-20 text-center"><RefreshCw className="animate-spin text-accent-blue inline-block mb-3" size={32} /><p className="text-xs font-mono text-slate-400">Generating High-Yield Questions...</p></div>;
+            return <div className="py-20 text-center"><p className="text-xs font-mono text-slate-400">Generating High-Yield Questions...</p></div>;
           }
           const currentQuestion = quizData[currentQuestionIndex];
           const selectedAnswer = userAnswers[currentQuestionIndex];
