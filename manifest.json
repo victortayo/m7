@@ -1,6 +1,6 @@
 {
-  "name": "materia.",
-  "short_name": "materia",
+  "name": "materea.",
+  "short_name": "materea",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f8fafc",
@@ -8,12 +8,12 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",
+      "src": "assets/favicon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",
+      "src": "assets/favicon.png",
       "sizes": "512x512",
       "type": "image/png"
     }

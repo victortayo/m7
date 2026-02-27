@@ -222,7 +222,7 @@ const NoteDetail: React.FC = () => {
                 <div key={s.id} id={s.id} className={`section-anchor transition-all ${index < array.length - 1 ? 'border-b border-slate-200' : ''}`}>
                   <div onClick={() => toggleSection(s.id)} className="flex items-center gap-4 p-5 cursor-pointer hover:bg-slate-50 transition-colors select-none">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${openSections[s.id] ? 'bg-accent-blue text-white' : 'bg-slate-100 text-slate-500'}`}>{s.icon}</div>
-                    <h2 className="font-display text-xl font-bold text-ink flex-1">{s.title}</h2>
+                    <h2 className="text-base font-medium text-ink flex-1">{s.title}</h2>
                     <ChevronDown size={20} className={`text-slate-400 transition-transform duration-300 ${openSections[s.id] ? 'rotate-180' : ''}`} />
                   </div>
                   <AnimatePresence>
@@ -231,9 +231,9 @@ const NoteDetail: React.FC = () => {
                         <div className="p-5 md:p-8"><ReactMarkdown remarkPlugins={[remarkGfm]} components={{
                           table: ({node, ...props}) => <div className="overflow-x-auto"><table className="med-table" {...props} /></div>,
                           h3: ({node, ...props}) => <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 mt-8 mb-4 flex items-center gap-3" {...props} />,
-                          p: ({node, ...props}) => <p className="text-[15px] leading-relaxed text-slate-700 mb-5" {...props} />,
+                          p: ({node, ...props}) => <p className="text-[13px] leading-relaxed text-slate-700 mb-5" {...props} />,
                           ul: ({node, ...props}) => <ul className="space-y-3 mb-5" {...props} />,
-                          li: ({node, children, ...props}) => (<li className="flex gap-3 items-start text-[15px] text-slate-700" {...props}><div className="w-1.5 h-1.5 rounded-full bg-accent-blue shrink-0 mt-2.5 opacity-60" /><span>{children}</span></li>),
+                          li: ({node, children, ...props}) => (<li className="flex gap-3 items-start text-[13px] text-slate-700" {...props}><div className="w-1.5 h-1.5 rounded-full bg-accent-blue shrink-0 mt-2.5 opacity-60" /><span>{children}</span></li>),
                           blockquote: ({node, children, ...props}) => {
                             let textContent = '';
                             React.Children.forEach(children, child => { if (React.isValidElement(child) && child.props.children) { textContent += React.Children.toArray(child.props.children).join(''); } });
