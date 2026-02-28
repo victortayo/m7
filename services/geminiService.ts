@@ -216,10 +216,13 @@ Divided by the anatomical location of the obstructing lesion:
 
 **B. Causes by Age Group**
 
-| GI Region | Infancy & Childhood | Adults |
-| :--- | :--- | :--- |
-| **Upper GI** | Infantile Hypertrophic Pyloric Stenosis (IHPS)<br>Duodenal atresia / stenosis, Annular pancreas | Gastric cancer, Complicated peptic ulcer<br>Cancer of head of pancreas, Gallstone |
-| **Lower GI** | Jejunal/Ileal atresia, stenosis<br>Gut malrotation, Intussusception<br>Hirschsprung's disease, Anorectal malformation, Volvulus | Adhesions, Paralytic ileus<br>Colorectal carcinoma, Anastomotic stenosis<br>Sigmoid volvulus |
+**Upper GI**
+*   **Infancy & Childhood**: Infantile Hypertrophic Pyloric Stenosis (IHPS), Duodenal atresia / stenosis, Annular pancreas
+*   **Adults**: Gastric cancer, Complicated peptic ulcer, Cancer of head of pancreas, Gallstone
+
+**Lower GI**
+*   **Infancy & Childhood**: Jejunal/Ileal atresia, stenosis, Gut malrotation, Intussusception, Hirschsprung's disease, Anorectal malformation, Volvulus
+*   **Adults**: Adhesions, Paralytic ileus, Colorectal carcinoma, Anastomotic stenosis, Sigmoid volvulus
 
 **C. Adynamic (Functional) Causes**
 * Post abdominal surgery (paralytic ileus) — most common; physiologic; peristalsis returns: small bowel ~12-24hrs, stomach ~24-48hrs, large bowel ~48-72hrs
@@ -369,6 +372,7 @@ There is paralysis of intestinal wall musculature. Pain is not a predominant fea
   * Supine large bowel: peripherally located dilated loops, haustral markings
   * Single bubble sign — gastric outlet obstruction (IHPS, gastric stenosis, gastric cancer)
   * Double bubble sign — duodenal atresia
+    ![Double Bubble Sign](/images/notes/double-bubble-sign.png)
   * Triple bubble sign — jejunal atresia
   * Adynamic obstruction (paralytic ileus) — bowel gas throughout including in pelvis
 * **Contrast Studies**
@@ -376,13 +380,17 @@ There is paralysis of intestinal wall musculature. Pain is not a predominant fea
   * Barium Enema (lower GI obstruction):
     * Corkscrew appearance — gut malrotation
     * Coiled spring sign — intussusception
+      ![Coiled Spring Sign](/images/notes/coiled-spring-sign.png)
     * Champagne glass / inverted umbrella — Hirschsprung's disease
     * Apple core deformity / filling defect — colorectal cancer
+      ![Apple Core Deformity](/images/notes/apple-core-deformity.png)
     * Bird beak deformity — volvulus
+      ![Bird Beak Deformity](/images/notes/bird-beak-deformity.png)
   * Water-soluble contrast (Gastrograffin) preferred when contrast study is required; contraindicated in peritonitis, strangulation, perforation
 * **Abdominal Ultrasound**
   * Of little importance except in complicated cases (e.g. to locate mass)
   * Target/Donut sign (transverse view) or Pseudokidney sign (longitudinal view) — intussusception
+    ![Intussusception Target Sign](/images/notes/intussusception-target-sign.png)
 * **Endoscopy**
   * Upper GI endoscopy + biopsy — gastric outlet obstruction for histological diagnosis
   * Lower GI endoscopy (proctoscopy, sigmoidoscopy, colonoscopy) — to visualise obstruction site and take biopsy, e.g. Hirschsprung's disease (absent/decreased ganglion cells)
@@ -446,15 +454,19 @@ There is paralysis of intestinal wall musculature. Pain is not a predominant fea
     * Transverse colon: Transverse colectomy
     * Descending colon to upper sigmoid: Left hemicolectomy
     * Lower sigmoid to upper rectum (>15cm from anal verge): Anterior resection
+      ![Anterior Resection](/images/notes/anterior-resection.png)
     * Rectal tumour <10cm from anal verge: Abdominoperineal resection
   * Hernia — Herniotomy (children) or Hernioraphy (adults) + resection + end-to-end anastomosis for non-viable bowel
   * Gastric cancer — subtotal gastrectomy (>50% resected) + gastrojejunostomy, OR Bilroth II operation for antral cancer
   * Malrotation — Ladd's operation
+    ![Ladd's Procedure](/images/notes/ladds-procedure.png)
   * Ileal atresia/stenosis — resection and anastomosis
   * Infantile pyloric stenosis — Ramstedt Pyloromyotomy
+    ![Ramstedt Pyloromyotomy](/images/notes/ramstedt-pyloromyotomy.png)
   * Duodenal atresia + annular pancreas — duodeno-duodenostomy or gastroduodenostomy
   * Hirschsprung's disease:
     * Swenson's operation (rectosigmoidectomy)
+      ![Swenson's Procedure](/images/notes/swensons-procedure.png)
     * Duhamel Operation (retro-rectal operation)
     * Soave operation (endorectal operation)
   * Anorectal malformation:
