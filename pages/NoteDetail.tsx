@@ -227,6 +227,7 @@ const NoteDetail: React.FC = () => {
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
                         <div className="p-5 md:p-8"><ReactMarkdown remarkPlugins={[remarkGfm]} components={{
                           table: ({node, ...props}) => <div className="overflow-x-auto"><table className="med-table" {...props} /></div>,
+                          th: ({node, ...props}) => <th className="p-3 text-left text-xs font-bold uppercase tracking-wider text-accent-blue" {...props} />,
                           h3: ({node, ...props}) => <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 mt-8 mb-4 flex items-center gap-3" {...props} />,
                           p: ({node, ...props}) => <p className="text-[13px] leading-relaxed text-slate-700 mb-5" {...props} />,
                           ul: ({node, ...props}) => <ul className="space-y-3 mb-5" {...props} />,
@@ -236,9 +237,11 @@ const NoteDetail: React.FC = () => {
                             React.Children.forEach(children, child => { if (React.isValidElement(child) && child.props.children) { textContent += React.Children.toArray(child.props.children).join(''); } });
                             const isPearl = textContent.includes('[PEARL]');
                             const isWarn = textContent.includes('[WARN]') || textContent.includes('[DANGER]');
+                            const isNote = textContent.includes('[NOTE]') || textContent.includes('[NB]');
                             const cleanChildren = (tag: RegExp) => React.Children.map(children, c => React.isValidElement(c) ? React.cloneElement(c, {...c.props, children: React.Children.map(c.props.children, pc => typeof pc === 'string' ? pc.replace(tag, '').trim() : pc)}) : c);
                             if (isPearl) return <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white"><div className="p-5"><div className="flex gap-3 items-center mb-3"><div className="text-amber-500"><Lightbulb size={18}/></div><h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4></div><div className="text-[14px] leading-relaxed italic text-amber-900/90">{cleanChildren(/\[PEARL\]/g)}</div></div><div className="px-5 pb-3"><div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div></div></div>
                             if (isWarn) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}><div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div><div className="text-[14px] leading-relaxed italic">{cleanChildren(/\[(WARN|DANGER)\]/g)}</div></div>
+                            if (isNote) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{cleanChildren(/\[(NOTE|NB)\]/g)}</div></div>
                             return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>;
                           },
                           strong: ({node, ...props}) => <strong className="font-bold text-slate-900" {...props} />
