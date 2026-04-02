@@ -5,7 +5,7 @@ import {
   Bookmark, BookmarkCheck, 
   CheckCircle, XCircle, ChevronDown, Info, AlertTriangle, Lightbulb,
   FileText, Activity, ClipboardList, Thermometer, ShieldCheck, HelpCircle,
-  ArrowLeft, Trophy
+  ArrowLeft, Trophy, ChevronsDownUp
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -30,8 +30,9 @@ const NoteDetail: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<string>('');
+  const [sections, setSections] = useState<Section[]>([]);
   const [isSaved, setIsSaved] = useState(false);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ overview: true });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [activeSection, setActiveSection] = useState('overview');
   
   // Quiz State
@@ -47,6 +48,56 @@ const NoteDetail: React.FC = () => {
   const topic = specialty?.topics.find(t => t.id === topicId);
   const noteId = `${specialtyId}_${topicId}`;
 
+  const parseSections = (md: string): Section[] => {
+    const heroMatch = md.match(/# HERO_START([\s\S]*?)# HERO_END/);
+    const heroContent = heroMatch ? heroMatch[1] : '';
+    const body = md.replace(/# HERO_START[\s\S]*?# HERO_END/, '');
+    
+    const titleMatch = heroContent.match(/Title:\s*(.*)/);
+    const subtitleMatch = heroContent.match(/Subtitle:\s*(.*)/);
+    
+    const parsedSections: Section[] = [{ 
+      id: 'overview', 
+      title: titleMatch ? titleMatch[1].trim() : (topic?.title || 'Overview'), 
+      content: subtitleMatch ? subtitleMatch[1].trim() : 'A high-yield summary.',
+      icon: <Info size={16} />
+    }];
+
+    const iconsMap: Record<string, any> = {
+      'what you need to learn': <ClipboardList size={16} />,
+      'definition': <Info size={16} />,
+      'aetiology': <Activity size={16} />,
+      'history': <ClipboardList size={16} />,
+      'examination': <Thermometer size={16} />,
+      'investigations': <FileText size={16} />,
+      'differential': <HelpCircle size={16} />,
+      'management': <ShieldCheck size={16} />,
+      'complications': <AlertTriangle size={16} />,
+      'key points': <Lightbulb size={16} />,
+      'practice essay questions': <FileText size={16} />
+    };
+
+    const parts = body.split(/^## /m);
+    parts.forEach((part, i) => {
+      if (i === 0 && !part.trim()) return;
+      const lines = part.split('\n');
+      const title = lines[0].trim();
+      if (!title) return;
+      
+      const id = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const iconKey = Object.keys(iconsMap).find(k => title.toLowerCase().includes(k)) || 'default';
+      
+      parsedSections.push({
+        id,
+        title,
+        content: lines.slice(1).join('\n').trim(),
+        icon: iconsMap[iconKey] || <FileText size={14} />
+      });
+    });
+
+    return parsedSections;
+  };
+
   useEffect(() => {
     loadNote();
     if (initialMode === 'quiz_setup') {
@@ -57,25 +108,38 @@ const NoteDetail: React.FC = () => {
   const loadNote = async (forceRefresh = false) => {
     if (!specialty || !topic) return;
     setLoading(true);
-    setOpenSections({ overview: true });
     setActiveSection('overview');
 
     const savedNotes = JSON.parse(localStorage.getItem('savedNotes') || '[]');
     const savedNote = savedNotes.find((n: SavedNote) => n.id === noteId);
+    let noteContent: string;
 
     if (savedNote && !forceRefresh) {
-      setContent(savedNote.content);
+      noteContent = savedNote.content;
       setIsSaved(true);
-      setLoading(false);
     } else {
       try {
-        const text = await generateStudyNote(specialty.name, topic.title);
-        setContent(text);
+        noteContent = await generateStudyNote(specialty.name, topic.title);
         setIsSaved(false);
-      } catch (err) { console.error('Failed to load note'); }
-      finally { setLoading(false); }
+      } catch (err) { 
+        console.error('Failed to load note');
+        noteContent = 'Error loading note.';
+      }
     }
+
+    const parsed = parseSections(noteContent);
+    const allOpen = parsed.reduce((acc, section) => {
+      acc[section.id] = true;
+      return acc;
+    }, {} as Record<string, boolean>);
+
+    setContent(noteContent);
+    setSections(parsed);
+    setOpenSections(allOpen);
+    setLoading(false);
   };
+
+  const hero = sections[0] || { id: 'overview', title: 'Loading...', content: '' };
 
   const handleStartQuiz = async (numQuestions: number) => {
     if (!specialty || !topic) return;
@@ -118,57 +182,15 @@ const NoteDetail: React.FC = () => {
     setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const parseSections = (md: string): Section[] => {
-    const heroMatch = md.match(/# HERO_START([\s\S]*?)# HERO_END/);
-    const heroContent = heroMatch ? heroMatch[1] : '';
-    const body = md.replace(/# HERO_START[\s\S]*?# HERO_END/, '');
-    
-    const titleMatch = heroContent.match(/Title:\s*(.*)/);
-    const defMatch = heroContent.match(/Definition:\s*(.*)/);
-    
-    const sections: Section[] = [{ 
-      id: 'overview', 
-      title: titleMatch ? titleMatch[1].trim() : (topic?.title || 'Overview'), 
-      content: defMatch ? defMatch[1].trim() : 'Loading high-yield reference...',
-      icon: <Info size={16} />
-    }];
-
-    const iconsMap: Record<string, any> = {
-      'what you need to learn': <ClipboardList size={16} />,
-      'aetiology': <Activity size={16} />,
-      'history': <ClipboardList size={16} />,
-      'examination': <Thermometer size={16} />,
-      'investigations': <FileText size={16} />,
-      'differential': <HelpCircle size={16} />,
-      'management': <ShieldCheck size={16} />,
-      'complications': <AlertTriangle size={16} />,
-      'key points': <Lightbulb size={16} />,
-      'practice essay questions': <FileText size={16} />
-    };
-
-    const parts = body.split(/^## /m);
-    parts.forEach((part, i) => {
-      if (i === 0 && !part.trim()) return;
-      const lines = part.split('\n');
-      const title = lines[0].trim();
-      if (!title) return;
-      
-      const id = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
-      const iconKey = Object.keys(iconsMap).find(k => title.toLowerCase().includes(k)) || 'default';
-      
-      sections.push({
-        id,
-        title,
-        content: lines.slice(1).join('\n').trim(),
-        icon: iconsMap[iconKey] || <FileText size={14} />
-      });
+  const toggleAllSections = () => {
+    const allAreOpen = sections.slice(1).every(s => openSections[s.id]);
+    const shouldOpen = !allAreOpen;
+    const newOpenState = { ...openSections };
+    sections.slice(1).forEach(s => {
+      newOpenState[s.id] = shouldOpen;
     });
-
-    return sections;
+    setOpenSections(newOpenState);
   };
-
-  const sections = parseSections(content);
-  const hero = sections[0];
 
   const handleSave = () => {
     if (!content || !topic) return;
@@ -193,6 +215,8 @@ const NoteDetail: React.FC = () => {
   );
 
   const renderContent = () => {
+    const allSectionsOpen = sections.length > 1 && sections.slice(1).every(s => !!openSections[s.id]);
+
     switch (pageView) {
       case 'note':
         return (
@@ -200,20 +224,31 @@ const NoteDetail: React.FC = () => {
             <section id="overview" className="section-anchor bg-slate-900 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-xl shadow-slate-200/50 group">
               <div className="relative z-10">
                 <h1 className="font-display text-3xl md:text-5xl font-bold text-white mb-3 leading-tight">{hero.title}</h1>
-                <p className="text-slate-400 font-medium max-w-xl leading-relaxed">{hero.content}</p>
+                <p className="text-slate-400 font-medium max-w-xl leading-relaxed mb-6">{hero.content}</p>
+                <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2">
+                  <button onClick={() => setPageView('quiz_setup')} className="flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg shrink-0 hover:bg-white/20 transition-transform">
+                    <HelpCircle size={16} /> Practice
+                  </button>
+                  <button onClick={handleSave} className={`px-5 py-2.5 rounded-full border flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 ${isSaved ? 'bg-green-400/20 border-green-400/0 text-green-300' : 'bg-white/10 border-white/0 text-white hover:bg-white/20'}`}>
+                    {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />} {isSaved ? 'Saved' : 'Save Note'}
+                  </button>
+                </div>
               </div>
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay opacity-20 blur-3xl transform translate-x-1/3 -translate-y-1/3" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500 rounded-full mix-blend-overlay opacity-10 blur-3xl transform -translate-x-1/3 translate-y-1/3" />
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-soft-light" />
             </section>
-            <div className="flex items-center gap-3 my-6 overflow-x-auto no-scrollbar pb-2">
-              <button onClick={() => setPageView('quiz_setup')} className="flex items-center gap-2 px-5 py-2.5 bg-accent-blue text-white rounded-lg text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-accent-blue/20 shrink-0 hover:scale-[1.02] transition-transform">
-                <HelpCircle size={16} /> Practice
-              </button>
-              <button onClick={handleSave} className={`px-5 py-2.5 rounded-lg border flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 ${isSaved ? 'bg-green-50 border-green-200 text-green-700' : 'bg-white border-slate-200 text-slate-500 hover:text-ink'}`}>
-                {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />} {isSaved ? 'Saved' : 'Save Note'}
+            
+            <div className="flex justify-end my-4">
+              <button
+                onClick={toggleAllSections}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-slate-200 transition-colors"
+              >
+                <ChevronsDownUp size={16} />
+                {allSectionsOpen ? 'Collapse All' : 'Expand All'}
               </button>
             </div>
+
             <div className="bg-white border border-slate-200 rounded-xl shadow-md ring-1 ring-black/5 overflow-hidden">
               {sections.slice(1).map((s, index, array) => (
                 <div key={s.id} id={s.id} className={`section-anchor transition-all ${index < array.length - 1 ? 'border-b border-slate-200' : ''}`}>
@@ -234,11 +269,11 @@ const NoteDetail: React.FC = () => {
                           li: ({node, children, ...props}) => (<li className="flex gap-3 items-start text-[13px] text-slate-700" {...props}><div className="w-1.5 h-1.5 rounded-full bg-accent-blue shrink-0 mt-2.5 opacity-60" /><span>{children}</span></li>),
                           blockquote: ({node, children, ...props}) => {
                             let textContent = '';
-                            React.Children.forEach(children, child => { if (React.isValidElement(child) && child.props.children) { textContent += React.Children.toArray(child.props.children).join(''); } });
+                            React.Children.forEach(children, child => { if (React.isValidElement(child) && (child.props as any).children) { textContent += React.Children.toArray((child.props as any).children).join(''); } });
                             const isPearl = textContent.includes('[PEARL]');
                             const isWarn = textContent.includes('[WARN]') || textContent.includes('[DANGER]');
                             const isNote = textContent.includes('[NOTE]') || textContent.includes('[NB]');
-                            const cleanChildren = (tag: RegExp) => React.Children.map(children, c => React.isValidElement(c) ? React.cloneElement(c, {...c.props, children: React.Children.map(c.props.children, pc => typeof pc === 'string' ? pc.replace(tag, '').trim() : pc)}) : c);
+                            const cleanChildren = (tag: RegExp) => React.Children.map(children, c => React.isValidElement(c) ? React.cloneElement(c as React.ReactElement<any>, {...(c as any).props, children: React.Children.map((c as any).props.children, pc => typeof pc === 'string' ? pc.replace(tag, '').trim() : pc)}) : c);
                             if (isPearl) return <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white"><div className="p-5"><div className="flex gap-3 items-center mb-3"><div className="text-amber-500"><Lightbulb size={18}/></div><h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4></div><div className="text-[14px] leading-relaxed italic text-amber-900/90">{cleanChildren(/\[PEARL\]/g)}</div></div><div className="px-5 pb-3"><div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div></div></div>
                             if (isWarn) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}><div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div><div className="text-[14px] leading-relaxed italic">{cleanChildren(/\[(WARN|DANGER)\]/g)}</div></div>
                             if (isNote) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{cleanChildren(/\[(NOTE|NB)\]/g)}</div></div>

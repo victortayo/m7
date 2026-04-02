@@ -13,7 +13,7 @@ const AnimatedRoutes: React.FC = () => {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <Routes location={location} key={location.pathname} future={{ v7_relativeSplatPath: true }}>
         <Route path="/" element={<Home />} />
         <Route path="/specialty/:id" element={<SpecialtyDetail />} />
         <Route path="/note/:specialtyId/:topicId" element={<NoteDetail />} />
