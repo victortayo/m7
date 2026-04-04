@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, Book, Home, Menu, X, Circle, AlignJustify, List, ChevronRight, FileText, Download } from 'lucide-react';
+import { Search, Book, Home, X, Circle, List, ChevronRight, FileText, Download, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarNav {
@@ -15,7 +15,6 @@ interface LayoutProps {
   showBack?: boolean;
   showBottomNav?: boolean;
   
-  // TOC / On This Page Data
   sidebarContent?: {
     topicName: string;
     meta?: string[];
@@ -23,7 +22,6 @@ interface LayoutProps {
   };
   activeSection?: string;
 
-  // Topics Navigation Data
   topicsList?: { id: string; title: string }[];
   currentSpecialtyId?: string;
 }
@@ -31,7 +29,6 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
   title, 
-  showBack = false, 
   showBottomNav = true,
   sidebarContent,
   activeSection,
@@ -43,6 +40,33 @@ const Layout: React.FC<LayoutProps> = ({
   
   const [isTopicsDrawerOpen, setIsTopicsDrawerOpen] = useState(false);
   const [isTOCDrawerOpen, setIsTOCDrawerOpen] = useState(false);
+  const [showFloatingButtons, setShowFloatingButtons] = useState(true);
+
+  const mainScrollRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const mainScroller = mainScrollRef.current;
+    if (!mainScroller) return;
+
+    const handleScroll = () => {
+      setShowFloatingButtons(false);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(() => {
+        setShowFloatingButtons(true);
+      }, 300);
+    };
+
+    mainScroller.addEventListener('scroll', handleScroll);
+    return () => {
+      mainScroller.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleTOCClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -51,7 +75,7 @@ const Layout: React.FC<LayoutProps> = ({
 
     const sectionId = href.slice(1);
     const section = document.getElementById(sectionId);
-    const mainScroller = document.querySelector('main');
+    const mainScroller = mainScrollRef.current;
 
     if (section && mainScroller) {
         const mainTop = mainScroller.getBoundingClientRect().top;
@@ -71,8 +95,9 @@ const Layout: React.FC<LayoutProps> = ({
     <div className="h-full w-full bg-[#FAFAFA] flex flex-col relative overflow-hidden font-sans">
       
       <header className="flex-none w-full z-[110] bg-white/80 backdrop-blur-md border-b border-slate-200/60 h-14 flex items-center px-4 md:px-7 gap-5 shadow-sm">
+        
         <div 
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer" 
           onClick={() => navigate('/')}
         >
           <h1 className="font-display text-xl font-bold text-ink tracking-tight">
@@ -93,20 +118,12 @@ const Layout: React.FC<LayoutProps> = ({
           >
             <Search size={20} />
           </button>
-          
-          {topicsList && (
-            <button 
-              onClick={() => setIsTopicsDrawerOpen(true)}
-              className="p-2 ml-1 text-slate-600 hover:text-accent-blue transition-colors rounded-full hover:bg-slate-100"
-            >
-              <AlignJustify size={22} />
-            </button>
-          )}
         </div>
       </header>
 
       <div className="flex-1 flex overflow-hidden relative">
-        
+
+        {/* Topics Drawer (Right) */}
         <AnimatePresence>
           {isTopicsDrawerOpen && topicsList && (
             <>
@@ -116,14 +133,14 @@ const Layout: React.FC<LayoutProps> = ({
                 className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[120]"
               />
               <motion.aside 
-                initial={{ x: '-100%' }}
+                initial={{ x: '100%' }}
                 animate={{ x: 0 }}
-                exit={{ x: '-100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[130] shadow-2xl flex flex-col"
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+                className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-white z-[130] shadow-2xl flex flex-col"
               >
                 <div className="p-5 border-b border-rule flex items-center justify-between bg-slate-50/50">
-                  <h2 className="font-display text-xl font-bold text-ink">Browse Specialty</h2>
+                  <h2 className="font-display text-xl font-bold text-ink">Browse Topics</h2>
                   <button onClick={() => setIsTopicsDrawerOpen(false)} className="p-2 hover:bg-slate-200 rounded-full text-slate-500">
                     <X size={20} />
                   </button>
@@ -151,6 +168,7 @@ const Layout: React.FC<LayoutProps> = ({
           )}
         </AnimatePresence>
 
+        {/* TOC Drawer (Left) */}
         <AnimatePresence>
           {isTOCDrawerOpen && sidebarContent && (
             <>
@@ -160,11 +178,11 @@ const Layout: React.FC<LayoutProps> = ({
                 className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[120]"
               />
               <motion.aside 
-                initial={{ x: '100%' }}
+                initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-white z-[130] shadow-2xl flex flex-col"
+                exit={{ x: '-100%' }}
+                transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+                className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[130] shadow-2xl flex flex-col"
               >
                 <div className="p-6 border-b border-rule bg-slate-50/50 flex justify-between items-start">
                   <div>
@@ -211,22 +229,40 @@ const Layout: React.FC<LayoutProps> = ({
           )}
         </AnimatePresence>
 
-        <main className="flex-1 overflow-y-auto relative z-10 scroll-smooth bg-[#FAFAFA]">
+        <main ref={mainScrollRef} className="flex-1 overflow-y-auto relative z-10 scroll-smooth bg-[#FAFAFA]">
           <div className="w-[92%] md:max-w-3xl mx-auto py-8 md:py-12">
             {children}
           </div>
         </main>
         
+        {/* Floating Buttons */}
         <AnimatePresence>
-          {sidebarContent && !isTOCDrawerOpen && (
+          {showFloatingButtons && sidebarContent && !isTOCDrawerOpen && (
              <motion.button
-               initial={{ scale: 0, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               exit={{ scale: 0, opacity: 0 }}
-               onClick={() => setIsTOCDrawerOpen(true)}
-               className="fixed bottom-20 right-6 z-[90] bg-slate-900 text-white p-4 rounded-full shadow-xl shadow-slate-900/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setIsTOCDrawerOpen(true)}
+                aria-label="Open Table of Contents"
+                className="fixed bottom-20 left-5 z-[90] bg-slate-900 text-white p-3 rounded-full shadow-xl shadow-slate-900/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
              >
-               <List size={24} />
+               <List size={20} />
+             </motion.button>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {showFloatingButtons && sidebarContent && topicsList && !isTopicsDrawerOpen && (
+             <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setIsTopicsDrawerOpen(true)}
+                aria-label="Browse Topics"
+                className="fixed bottom-36 left-5 z-[90] bg-slate-900 text-white p-3 rounded-full shadow-xl shadow-slate-900/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+             >
+               <Layers size={20} />
              </motion.button>
           )}
         </AnimatePresence>

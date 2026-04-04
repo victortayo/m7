@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search as SearchIcon, ChevronRight } from 'lucide-react';
-import Layout from '../components/Layout';
 import { SPECIALTIES } from '../data/staticData';
 
 const Search: React.FC = () => {
@@ -41,7 +40,6 @@ const Search: React.FC = () => {
   }, [query]);
 
   return (
-    <Layout title="Search">
       <div className="space-y-6">
         <div className="relative group">
           <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-600 transition-colors" size={20} />
@@ -79,7 +77,6 @@ const Search: React.FC = () => {
           )}
         </div>
       </div>
-    </Layout>
   );
 };
 

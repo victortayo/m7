@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import Layout from '../components/Layout';
+import { useLayout } from '../contexts/LayoutContext';
 import { SPECIALTIES } from '../data/staticData';
 import { generateStudyNote, generateQuiz, QuizQuestion } from '../services/geminiService';
 import { SavedNote } from '../types';
@@ -28,6 +28,7 @@ const NoteDetail: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') === 'quiz' ? 'quiz_setup' : 'note';
 
+  const { setLayout } = useLayout();
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<string>('');
   const [sections, setSections] = useState<Section[]>([]);
@@ -104,6 +105,23 @@ const NoteDetail: React.FC = () => {
       setPageView('quiz_setup');
     }
   }, [specialtyId, topicId, initialMode]);
+
+  useEffect(() => {
+    const sidebarData = {
+      topicName: topic?.title || 'Clinical Topic',
+      meta: [specialty?.name || 'Medicine', 'High Yield'],
+      sections: sections.map(s => ({ id: s.id, label: s.title, icon: s.icon }))
+    };
+    setLayout({
+      title: specialty?.name,
+      showBack: true,
+      showBottomNav: false,
+      sidebarContent: sidebarData,
+      activeSection: activeSection,
+      topicsList: specialty?.topics,
+      currentSpecialtyId: specialtyId
+    });
+  }, [specialty, topic, sections, activeSection, setLayout]);
 
   const loadNote = async (forceRefresh = false) => {
     if (!specialty || !topic) return;
@@ -204,14 +222,8 @@ const NoteDetail: React.FC = () => {
     }
   };
 
-  const sidebarData = {
-    topicName: topic?.title || 'Clinical Topic',
-    meta: [specialty?.name || 'Medicine', 'High Yield'],
-    sections: sections.map(s => ({ id: s.id, label: s.title, icon: s.icon }))
-  };
-
   if (loading) return (
-    <Layout title="Reference"><div className="flex flex-col items-center justify-center py-40 gap-4"><p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Loading Content</p></div></Layout>
+    <div className="flex flex-col items-center justify-center py-40 gap-4"><p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Loading Content</p></div>
   );
 
   const renderContent = () => {
@@ -268,15 +280,20 @@ const NoteDetail: React.FC = () => {
                           ul: ({node, ...props}) => <ul className="space-y-3 mb-5" {...props} />,
                           li: ({node, children, ...props}) => (<li className="flex gap-3 items-start text-[13px] text-slate-700" {...props}><div className="w-1.5 h-1.5 rounded-full bg-accent-blue shrink-0 mt-2.5 opacity-60" /><span>{children}</span></li>),
                           blockquote: ({node, children, ...props}) => {
-                            let textContent = '';
-                            React.Children.forEach(children, child => { if (React.isValidElement(child) && (child.props as any).children) { textContent += React.Children.toArray((child.props as any).children).join(''); } });
+                            const getMdastText = (n: any): string => {
+                              if (n.type === 'text') return n.value;
+                              if (n.children) return n.children.map(getMdastText).join('');
+                              return '';
+                            };
+                            const textContent = getMdastText(node);
+
                             const isPearl = textContent.includes('[PEARL]');
                             const isWarn = textContent.includes('[WARN]') || textContent.includes('[DANGER]');
                             const isNote = textContent.includes('[NOTE]') || textContent.includes('[NB]');
-                            const cleanChildren = (tag: RegExp) => React.Children.map(children, c => React.isValidElement(c) ? React.cloneElement(c as React.ReactElement<any>, {...(c as any).props, children: React.Children.map((c as any).props.children, pc => typeof pc === 'string' ? pc.replace(tag, '').trim() : pc)}) : c);
-                            if (isPearl) return <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white"><div className="p-5"><div className="flex gap-3 items-center mb-3"><div className="text-amber-500"><Lightbulb size={18}/></div><h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4></div><div className="text-[14px] leading-relaxed italic text-amber-900/90">{cleanChildren(/\[PEARL\]/g)}</div></div><div className="px-5 pb-3"><div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div></div></div>
-                            if (isWarn) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}><div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div><div className="text-[14px] leading-relaxed italic">{cleanChildren(/\[(WARN|DANGER)\]/g)}</div></div>
-                            if (isNote) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{cleanChildren(/\[(NOTE|NB)\]/g)}</div></div>
+
+                            if (isPearl) return <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white"><div className="p-5"><div className="flex gap-3 items-center mb-3"><div className="text-amber-500"><Lightbulb size={18}/></div><h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4></div><div className="text-[14px] leading-relaxed italic text-amber-900/90">{children}</div></div><div className="px-5 pb-3"><div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div></div></div>
+                            if (isWarn) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}><div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>
+                            if (isNote) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>
                             return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>;
                           },
                           strong: ({node, ...props}) => <strong className="font-bold text-slate-900" {...props} />
@@ -405,21 +422,11 @@ const NoteDetail: React.FC = () => {
   };
 
   return (
-    <Layout 
-      title={specialty?.name} 
-      showBack 
-      showBottomNav={false}
-      sidebarContent={sidebarData}
-      activeSection={activeSection}
-      topicsList={specialty?.topics}
-      currentSpecialtyId={specialtyId}
-    >
-      <div className="pb-24"> 
-        <AnimatePresence mode="wait">
-          {renderContent()}
-        </AnimatePresence>
-      </div>
-    </Layout>
+    <div className="pb-24"> 
+      <AnimatePresence mode="wait">
+        {renderContent()}
+      </AnimatePresence>
+    </div>
   );
 };
 
