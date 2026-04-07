@@ -21,6 +21,8 @@ const itemVariants = {
 const SpecialtyCard: React.FC<SpecialtyCardProps> = ({ specialty, onClick, index }) => {
   // Dynamically get the icon component, fallback to Circle if not found
   const IconComponent = (Icons as any)[specialty.icon] || Icons.Circle;
+  const colorClass = specialty.color ? specialty.color.replace('bg-', '') : 'slate-500';
+
 
   return (
     <motion.div
@@ -32,8 +34,8 @@ const SpecialtyCard: React.FC<SpecialtyCardProps> = ({ specialty, onClick, index
       {/* Glossy gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-60 pointer-events-none" />
 
-      <div className={`w-14 h-14 rounded-2xl ${specialty.color} bg-opacity-10 group-active:bg-opacity-20 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105 group-active:scale-95 shadow-inner`}>
-        <IconComponent className={`text-${specialty.color.replace('bg-', '')} opacity-90`} size={26} />
+      <div className={`w-14 h-14 rounded-2xl ${specialty.color || 'bg-slate-100'} bg-opacity-10 group-active:bg-opacity-20 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105 group-active:scale-95 shadow-inner`}>
+        <IconComponent className={`text-${colorClass} opacity-90`} size={26} />
       </div>
       
       <div className="flex-1 min-w-0 relative z-10">

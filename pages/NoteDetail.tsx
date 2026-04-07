@@ -13,6 +13,9 @@ import { useLayout } from '../contexts/LayoutContext';
 import { SPECIALTIES } from '../data/staticData';
 import { generateStudyNote, generateQuiz, QuizQuestion } from '../services/geminiService';
 import { SavedNote } from '../types';
+import PodcastEmbed from '../components/PodcastEmbed';
+import YoutubeEmbed from '../components/YoutubeEmbed';
+import InlineImage from '../components/InlineImage';
 
 interface Section {
   id: string;
@@ -35,7 +38,8 @@ const NoteDetail: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [activeSection, setActiveSection] = useState('overview');
-  
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+
   // Quiz State
   const [pageView, setPageView] = useState<PageView>(initialMode);
   const [quizLoading, setQuizLoading] = useState(false);
@@ -251,7 +255,14 @@ const NoteDetail: React.FC = () => {
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-soft-light" />
             </section>
             
-            <div className="flex justify-end my-4">
+            <div className="flex justify-between my-4">
+              <button
+                onClick={() => setIsSummaryModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-slate-200 transition-colors"
+              >
+                <FileText size={16} />
+                View Summary
+              </button>
               <button
                 onClick={toggleAllSections}
                 className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-slate-200 transition-colors"
@@ -279,6 +290,11 @@ const NoteDetail: React.FC = () => {
                           p: ({node, ...props}) => <p className="text-[13px] leading-relaxed text-slate-700 mb-5" {...props} />,
                           ul: ({node, ...props}) => <ul className="space-y-3 mb-5" {...props} />,
                           li: ({node, children, ...props}) => (<li className="flex gap-3 items-start text-[13px] text-slate-700" {...props}><div className="w-1.5 h-1.5 rounded-full bg-accent-blue shrink-0 mt-2.5 opacity-60" /><span>{children}</span></li>),
+                          img: ({node, src, alt, ...props}) => {
+                            const fullCaption = alt || 'Medical Image';
+                            const shortCaption = fullCaption.split('.')[0];
+                            return <InlineImage src={src || ''} alt={alt || ''} shortCaption={shortCaption} fullCaption={fullCaption} />;
+                          },
                           blockquote: ({node, children, ...props}) => {
                             const getMdastText = (n: any): string => {
                               if (n.type === 'text') return n.value;
@@ -291,9 +307,25 @@ const NoteDetail: React.FC = () => {
                             const isWarn = textContent.includes('[WARN]') || textContent.includes('[DANGER]');
                             const isNote = textContent.includes('[NOTE]') || textContent.includes('[NB]');
 
-                            if (isPearl) return <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white"><div className="p-5"><div className="flex gap-3 items-center mb-3"><div className="text-amber-500"><Lightbulb size={18}/></div><h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4></div><div className="text-[14px] leading-relaxed italic text-amber-900/90">{children}</div></div><div className="px-5 pb-3"><div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div></div></div>
-                            if (isWarn) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}><div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>
-                            if (isNote) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>
+                            const removeTags = (children: React.ReactNode): React.ReactNode => {
+                                return React.Children.map(children, (child) => {
+                                  if (typeof child === 'string') {
+                                    return child.replace(/\s*\u005B(PEARL|WARN|DANGER|NOTE|NB)\u005D\s*/g, '');
+                                  }
+                                  if (React.isValidElement(child) && child.props.children) {
+                                    return React.cloneElement(
+                                      child,
+                                      {...child.props},
+                                      removeTags(child.props.children)
+                                    );
+                                  }
+                                  return child;
+                                });
+                            };
+
+                            if (isPearl) return <div className="my-6 rounded-2xl shadow-lg border border-amber-200/50 bg-white"><div className="p-5"><div className="flex gap-3 items-center mb-3"><div className="text-amber-500"><Lightbulb size={18}/></div><h4 className="font-bold text-amber-800 tracking-wider uppercase text-sm">Clinical Pearl</h4></div><div className="text-[14px] leading-relaxed italic text-amber-900/90">{removeTags(children)}</div></div><div className="px-5 pb-3"><div className="h-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div></div></div>
+                            if (isWarn) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-red-50 border border-red-100 text-red-900`}><div className="shrink-0 mt-0.5"><AlertTriangle size={18} className="text-red-500"/></div><div className="text-[14px] leading-relaxed italic">{removeTags(children)}</div></div>
+                            if (isNote) return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{removeTags(children)}</div></div>
                             return <div className={`my-6 p-5 rounded-xl flex gap-4 items-start bg-slate-50 border border-slate-100 text-slate-600`}><div className="shrink-0 mt-0.5"><Info size={18} className="text-accent-blue"/></div><div className="text-[14px] leading-relaxed italic">{children}</div></div>;
                           },
                           strong: ({node, ...props}) => <strong className="font-bold text-slate-900" {...props} />
@@ -304,6 +336,11 @@ const NoteDetail: React.FC = () => {
                 </div>
               ))}
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+              <PodcastEmbed spotifyEmbedUrl="https://open.spotify.com/embed/episode/7m6Bq2I326ssFvT2b7X7m2?utm_source=generator" />
+              <YoutubeEmbed youtubeEmbedUrl="https://www.youtube.com/embed/strosq9-I5g" />
+            </div>
+
           </motion.div>
         );
       case 'quiz_setup':
@@ -425,6 +462,57 @@ const NoteDetail: React.FC = () => {
     <div className="pb-24"> 
       <AnimatePresence mode="wait">
         {renderContent()}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isSummaryModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 pt-20"
+            onClick={() => setIsSummaryModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-white rounded-2xl shadow-xl max-w-2xl w-full flex flex-col max-h-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex justify-between items-center p-6 border-b border-slate-200 shrink-0">
+                <h2 className="font-display text-xl font-bold text-ink">Summary: {topic?.title}</h2>
+                <button 
+                  onClick={() => setIsSummaryModalOpen(false)} 
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <XCircle size={24} />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 md:p-8 overflow-y-auto">
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h3: ({node, ...props}) => <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-4 mb-2" {...props} />,
+                    p: ({node, ...props}) => <p className="text-sm text-slate-700 leading-relaxed mb-3" {...props} />,
+                    ul: ({node, ...props}) => <ul className="list-none p-0 space-y-2 my-3" {...props} />,
+                    li: ({node, children, ...props}) => (
+                      <li className="flex items-start gap-3 text-sm text-slate-700">
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0" />
+                        <span>{children}</span>
+                      </li>
+                    ),
+                  }}
+                >
+                  {topic?.summary || ''}
+                </ReactMarkdown>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

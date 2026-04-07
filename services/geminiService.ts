@@ -1,37 +1,57 @@
-import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Mocks for Gemini API
 
-const acuteAppendicitisContent = `
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+}
+
+export const generateStudyNote = async (specialty: string, topic: string): Promise<string> => {
+  console.log(`Generating study note for ${topic} in ${specialty}`);
+  // In a real app, this would be a call to the Gemini API
+  // For now, we'll return a mock response based on the topic
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  if (topic.toLowerCase().includes('appendicitis')) {
+    return appendicitisContent;
+  }
+  if (topic.toLowerCase().includes('intestinal obstruction')) {
+    return intestinalObstructionContent;
+  }
+  
+  return defaultContent;
+};
+
+const appendicitisContent = `
 # HERO_START
 Title: Acute Appendicitis
 Subtitle: Surgery | General Surgery
-Stats: 
-- Peak Incidence: 10-30 years
-- M:F Ratio: 1.4:1
-- Mortality: <1% for uncomplicated, 5-15% if perforated
-- Perforation Rate: 15-20%
-- Critical Threshold: N/A
 # HERO_END
 
 ## What You Need to Learn
 
-*   Understand the underlying causes and the step-by-step process of how appendicitis develops.
-*   Be able to take a focused history and perform a relevant physical examination to suspect appendicitis.
-*   Know which investigations to order, how to interpret them, and understand their limitations.
-*   Be familiar with the main differential diagnoses to consider in a patient with right iliac fossa pain.
-*   Outline the management principles for uncomplicated and complicated appendicitis.
-*   Recognize the potential complications of the condition and its treatment.
+*   Recognise the classic presentation of acute appendicitis.
+*   Understand the pathophysiology and aetiology.
+*   Know the key investigations and scoring systems.
+*   Outline the management of uncomplicated and complicated appendicitis.
 
 ## Definition
 
 Acute appendicitis is acute inflammation of the vermiform appendix, most likely due to obstruction of the lumen of the appendix.
 
+## Epidemiology
+
+*   **Incidence**: ~1 in 1000 people per year.
+*   **Lifetime Risk**: 8.6% for males, 6.7% for females.
+*   **Age**: Peak incidence in adolescents and young adults (10-19 years).
+
 ## Aetiology & Pathophysiology
 
 **AETIOLOGY**
 
-*   Lymphoid hyperplasia (60%) - associated with viral infections (measles, mononucleosis), Crohn's disease
+*   Lymphoid hyperplasia (60%) - associated with viral infections (measles, mononucleosis), Crohn\'s disease
 *   Faecolith/appendicolith (35%)
 *   Fibrotic strictures of the appendix - from previous episodes of inflammation
 *   Foreign bodies - fruit seeds, pins, worms (parasites)
@@ -53,132 +73,114 @@ Obstruction of appendiceal lumen → bacterial overgrowth → increased intralum
 
 Onset and progression of pain:
 
-*   Initial periumbilical/epigastric pain - moderate intensity, colicky or dull ache in nature (visceral pain from T10 dermatome)
-*   Migration of pain to the right iliac fossa (parietal peritoneal irritation) - a hallmark feature
-
-Site variations depending on appendix position:
-
-*   Retrocaecal appendix - pain at right flank
-*   Pelvic appendix - deep pelvic discomfort, dysuria
-*   Subhepatic appendix - right upper quadrant pain
-
-Aggravating and alleviating factors:
-
-*   Aggravating: coughing, sneezing, or sudden movement exacerbates the pain
-*   Alleviating: analgesics, lying still
+*   Classically, pain starts in the periumbilical region (visceral, dull, poorly localised).
+*   Over 12-24 hours, it migrates to the right iliac fossa (RIF) and becomes sharp, constant, and well-localised (somatic pain due to parietal peritoneum irritation).
 
 Associated symptoms:
 
-*   Anorexia (almost universal - its absence should prompt reconsideration of the diagnosis)
-*   Nausea and vomiting (typically after onset of pain - pain before vomiting suggests surgical cause)
-*   Low-grade fever
-*   Constipation or diarrhoea
-*   Dysuria or frequency (if appendix near bladder)
-*   Right lower abdominal swelling (in late presentations)
+*   **Anorexia** (loss of appetite) - very common.
+*   Nausea and vomiting - usually after the onset of pain.
+*   Low-grade fever.
+*   Constipation or diarrhoea.
 
-## Physical Examination
+[PEARL] The "hamburger sign" refers to asking a patient with suspected appendicitis if they would like to eat their favourite food (e.g., a hamburger). If they say yes, it makes the diagnosis of appendicitis less likely as anorexia is a key feature.
+
+## Examination
+
+**I. EXAMINATION**
 
 **General Examination**
 
-*   General appearance - note distress, posture (lying still suggests peritoneal irritation)
-*   Dehydration
-*   Febrile - usually low-grade fever (<38.5°C)
-*   Tachycardia
-*   Furred/coated tongue
+*   Patient may be lying still in bed, reluctant to move.
+*   Low-grade fever (~38°C).
+*   Tachycardia.
+*   Signs of dehydration (dry mucous membranes, reduced skin turgor).
 
 **Abdominal Examination**
 
-*   **Inspection:** Abdominal distension, Scars, Patient lying still.
-*   **Palpation:** Tenderness at McBurney's point, Rebound tenderness and guarding, Muscle spasm, Rovsing's sign, Psoas sign, Obturator sign.
-*   **Percussion:** Tenderness at RIF, Loss of liver dullness (perforation).
-*   **Auscultation:** Bowel sounds may be reduced or absent.
+*   **Inspection**: May see reduced abdominal movement on respiration.
+*   **Palpation**:
+    *   Tenderness over McBurney's point (two-thirds of the way from the umbilicus to the anterior superior iliac spine).
+    *   Rebound tenderness and guarding suggest peritoneal irritation.
+*   **Special Signs**:
+    *   **Rovsing's sign**: Pain in the RIF on palpation of the left iliac fossa (LIF).
+    *   **Psoas sign**: Pain on extension of the right hip (suggests retrocaecal appendix).
+    *   **Obturator sign**: Pain on internal rotation of the flexed right hip (suggests pelvic appendix).
 
-**Digital Rectal Examination (DRE)**
-
-*   Right-sided tenderness suggests pelvic appendicitis.
+[WARN] A perforated appendix can lead to generalised peritonitis, with a rigid, board-like abdomen. This is a surgical emergency.
 
 ## Investigations
 
-**Laboratory Investigations**
+**I. INVESTIGATIONS**
 
-*   **FBC:** Leucocytosis with neutrophilia (WBC >10,000/mm³)
-*   **CRP & ESR:** Elevated
-*   **Urine Analysis:** To rule out UTI
-*   **Urine beta-hCG:** Mandatory in all females of childbearing age
+**Bedside**
+
+*   Urine dipstick - to rule out urinary tract infection (UTI). May see sterile pyuria if the inflamed appendix is irritating the ureter.
+*   Pregnancy test (in all females of childbearing age) - to rule out ectopic pregnancy.
+
+**Bloods**
+
+*   **FBC**: Raised white cell count (WCC), mainly neutrophils.
+*   **CRP**: Raised inflammatory marker.
+*   **U&Es**: To assess for dehydration.
 
 **Imaging**
 
-*   **Ultrasound:** Non-compressible appendix >6mm.
-*   **CT Scan:** Most accurate; shows dilated appendix, fat stranding.
-*   **MRI:** Preferred in pregnancy.
+*   **Ultrasound (US)**: Useful in children and pregnant women to avoid radiation. May show a thickened, non-compressible appendix (>6mm diameter).
+*   **CT scan**: The gold standard for diagnosis, especially in adults. High sensitivity and specificity. Shows a dilated appendix, wall thickening, and surrounding fat stranding.
 
-## Scoring Systems
+**Scoring Systems**
 
-**Alvarado Score (MANTRELS)**
-
-*   **M** - Migration of pain (1)
-*   **A** - Anorexia (1)
-*   **N** - Nausea/Vomiting (1)
-*   **T** - Tenderness in RIF (2)
-*   **R** - Rebound tenderness (1)
-*   **E** - Elevated temperature (1)
-*   **L** - Leucocytosis (2)
-*   **S** - Shift to left (1)
-
-*Score 7-10 suggests high probability of appendicitis.*
+*   **Alvarado score**: A clinical scoring system to risk-stratify patients.
+    *   **M**igraton of pain (1)
+    *   **A**norexia (1)
+    *   **N**ausea/Vomiting (1)
+    *   **T**enderness in RIF (2)
+    *   **R**ebound tenderness (1)
+    *   **E**levated temperature (1)
+    *   **L**eukocytosis (2)
+    *   **S**hift to the left (1)
+*   Score 1-4: Appendicitis unlikely.
+*   Score 5-6: Possible appendicitis, consider imaging.
+*   Score 7-10: Likely appendicitis, consider surgical consultation.
 
 ## Differential Diagnosis
 
-**General:** Gastroenteritis, Mesenteric adenitis, Meckel's diverticulitis, Crohn's, UTI, Perforated peptic ulcer.
-**Gynaecological:** Ectopic pregnancy, Ovarian torsion, PID, Mittelschmerz.
-**Paediatric:** Intussusception, Lobar pneumonia.
+*   **Gynaecological**: Ectopic pregnancy, ovarian cyst rupture/torsion, pelvic inflammatory disease.
+*   **Urological**: UTI, renal colic.
+*   **Gastrointestinal**: Mesenteric adenitis, gastroenteritis, Meckel's diverticulitis, Crohn's disease exacerbation.
 
 ## Management
 
-**IV. TREATMENT**
+**I. MANAGEMENT**
 
-**Initial Management:** NBM, IV fluids, Analgesia, IV antibiotics (if perforation suspected).
+**Conservative**
 
-**1. Uncomplicated Appendicitis**
+*   IV fluids.
+*   Analgesia.
+*   IV antibiotics (e.g., co-amoxiclav).
+*   "Active observation" - regular clinical assessment.
+*   May be appropriate for uncomplicated appendicitis or where surgery is high-risk.
 
-*   **Emergency Appendicectomy** (Open or Laparoscopic). Laparoscopic is preferred.
+**Surgical**
 
-**2. Appendix Mass (>3-5 days)**
+*   **Laparoscopic appendicectomy**: The standard of care.
+    *   Benefits: Less pain, smaller scar, faster recovery.
+*   **Open appendicectomy**: Via a gridiron (Lanz) incision in the RIF.
+    *   May be required for complex cases or if laparoscopy is unavailable.
 
-*   **Conservative Management (Ochsner-Sherren Regimen):** NBM, IV fluids, IV antibiotics, analgesia, and close monitoring of the mass size.
-*   **Interval Appendicectomy** after 6-8 weeks.
+**Post-operative**
 
-**3. Appendix Abscess**
-
-*   **CT-guided drainage** OR surgical drainage.
-*   Followed by interval appendicectomy.
+*   Continue IV antibiotics if perforated.
+*   Monitor for complications.
 
 ## Complications
 
-**Early**
-
-*   Gangrenous appendix
-*   Perforation
-*   Peritonitis
-*   Appendix mass/abscess
-*   Sepsis
-*   Portal pyaemia (pylephlebitis)
-
-**Late**
-
-*   Adhesions and intestinal obstruction
-*   Infertility (females)
-*   Enterocutaneous fistula
-
-## Key Points & Clinical Pearls
-
-*   Classic presentation: Periumbilical pain migrating to RIF with anorexia.
-*   Pain before vomiting suggests a surgical abdomen.
-*   McBurney's point tenderness is the most reliable sign.
-*   CT scan is the most accurate imaging modality; MRI preferred in pregnancy.
-*   Do not delay analgesia - it does not mask clinical signs.
-*   Higher perforation risk in extremes of age and delayed presentation.
-> [PEARL] "When in doubt, take it out!" - The risk of negative appendicectomy is less than the risk of perforation from delayed surgery.
+*   **Perforation**: Leads to peritonitis.
+*   **Appendix mass**: An omental phlegmon that forms around a perforated appendix.
+*   **Appendix abscess**: A collection of pus in the RIF.
+*   **Surgical site infection (SSI)**.
+*   **Adhesive small bowel obstruction**.
 
 ## Practice Essay Questions
 
@@ -195,554 +197,212 @@ Subtitle: Surgery | General Surgery
 
 ## What You Need to Learn
 
-*   Distinguish between mechanical and functional intestinal obstruction.
-*   Recognize the cardinal signs and symptoms of intestinal obstruction.
-*   Understand the pathophysiology of fluid and electrolyte shifts in obstruction.
-*   Formulate a differential diagnosis based on the patient's age and clinical presentation.
-*   Outline the principles of initial resuscitation and management.
-*   Know the indications for conservative versus surgical management.
+*   Identify the cardinal features of intestinal obstruction.
+*   Distinguish between small bowel and large bowel obstruction.
+*   Know the common causes.
+*   Outline the initial management principles.
 
 ## Definition
 
-Intestinal obstruction is the mechanical or functional blockade of the bowel that prevents the normal movement of the products of digestion. More specifically, it is the stoppage in the onward flow of intestinal contents, occurring distal to the ampulla of Vater — hence it is characterised by bilious vomiting.
+Intestinal obstruction is the failure of passage of intestinal contents. It can be mechanical (a physical blockage) or functional (paralytic ileus).
 
 ## Classification
 
-**A. Broad Classification**
+**By Location:**
+*   **Small Bowel Obstruction (SBO)**
+*   **Large Bowel Obstruction (LBO)**
 
-Intestinal obstruction is broadly classified into:
-* Dynamic (Mechanical) Obstruction — something within the lumen, wall, or outside the gut stops or restricts intestinal contents.
-* Adynamic (Functional/Paralytic) Obstruction — paralysis of the intestinal wall musculature leading to inability to propel contents, with no actual mechanical block (e.g. paralytic ileus post-laparotomy).
-
-**B. Classification of Mechanical Obstruction**
-
-* Acute — sudden onset
-* Chronic — slow progressive narrowing (often colorectal cancer, TB stricture)
-* Acute-on-Chronic — a chronic case that suddenly becomes completely occluded (usually by impacted faeces)
-
-**C. Classification by Site**
-
-* High (Upper) Intestinal Obstruction — affects lower duodenum, jejunum, upper ileum
-* Low (Lower) Intestinal Obstruction — affects terminal ileum and colon
-
-**D. Classification by Nature**
-
-* Simple obstruction — isolated occlusion of lumen, no blood supply impairment
-* Strangulation obstruction — occlusion with impaired blood supply (surgical emergency)
-* Closed-loop obstruction — obstructed loop closed at both ends; nothing escapes proximally or distally (e.g. volvulus, hernia with competent ileocaecal valve in right colon obstruction)
-
-> [NB] Ligament of Treitz is the anatomical landmark separating upper (proximal) from lower (distal) intestinal obstruction.
+**By Severity:**
+*   **Partial vs. Complete**
+*   **Simple vs. Strangulated** (compromised blood supply)
 
 ## Aetiology
 
-**A. Dynamic (Mechanical) Causes**
+**SMALL BOWEL OBSTRUCTION**
+*   **Adhesions** (60%) - from previous surgery.
+*   **Hernias** (20%) - inguinal, femoral, incisional.
+*   **Tumours** (5%) - malignant (e.g., small bowel lymphoma) or benign.
+
+**LARGE BOWEL OBSTRUCTION**
+*   **Colorectal cancer** (60%).
+*   **Volvulus** (15%) - sigmoid, caecal.
+*   **Diverticular disease** (10%) - causing strictures.
+
+[NOTE] In the developing world, hernias are a more common cause of SBO.
+
+## History
+
+**CARDINAL FEATURES**
+1.  **Abdominal pain**: Colicky, cramping. Becomes constant if strangulation occurs.
+2.  **Vomiting**: The earlier the vomiting in relation to the pain, the more proximal the obstruction. Faeculent vomiting (smells like faeces) is a late sign of distal obstruction.
+3.  **Abdominal distension**: More pronounced in LBO.
+4.  **Absolute constipation**: No flatus or faeces passed.
+
+## Examination
+
+*   **General**: Dehydration, tachycardia.
+*   **Abdominal Inspection**: Distension, visible peristalsis, old surgical scars.
+*   **Abdominal Palpation**: Generalised tenderness. Localised tenderness may suggest strangulation.
+*   **Abdominal Percussion**: Tympanitic (drum-like) sound.
+*   **Abdominal Auscultation**: "Tinkling" bowel sounds early on, becoming silent later.
+*   **Digital Rectal Exam (DRE)**: Empty rectum. May reveal a rectal tumour.
+
+[DANGER] The presence of fever, tachycardia, and localised tenderness should raise suspicion of strangulation, which is a surgical emergency.
+
+## Investigations
+
+*   **Bloods**: FBC, U&Es, Group & Save. Raised WCC and lactate may indicate strangulation/ischaemia.
+*   **Abdominal X-ray (AXR)**:
+    *   **SBO**: Dilated small bowel loops (>3cm), central location, valvulae conniventes visible.
+    *   **LBO**: Dilated large bowel loops (>6cm), peripheral location, haustra visible.
+*   **CT Scan**: The investigation of choice. Can identify the location and cause of obstruction, and detect complications like perforation or ischaemia.
+
+## Management
+
+**"DRIP AND SUCK"**
+1.  **IV Fluids ("Drip")**: Resuscitate with IV fluids to correct dehydration and electrolyte imbalance.
+2.  **Naso-gastric (NG) Tube ("Suck")**: Decompress the stomach and bowel to relieve vomiting and distension.
+3.  **Catheterise**: To monitor urine output.
+4.  **Analgesia**: For pain relief.
+
+**Further Management**
+*   **Conservative**: Many cases of adhesive SBO can be managed conservatively.
+*   **Surgical**:
+    *   Emergency laparotomy is required for signs of strangulation or if conservative management fails.
+    *   The procedure depends on the cause (e.g., adhesiolysis, hernia repair, tumour resection).
 
-Divided by the anatomical location of the obstructing lesion:
-
-**i. Intraluminal (within the lumen)**
-
-* Faecal impaction / Bezoars
-* Foreign bodies (e.g. swallowed coins — common in paediatric practice)
-* Worms/Ascaris — especially relevant in Nigeria and other tropical settings
-* Gallstones (Gallstone ileus)
-
-**ii. Intramural (within the intestinal wall)**
-
-* Atresia / Stenosis (congenital — common in neonates)
-* Strictures — commonly due to tuberculosis, Crohn's disease
-* Malignancy (colorectal carcinoma, gastric cancer, cancer of head of pancreas)
-* Polyps / Haemangiomas / Intussusception
-
-**iii. Extramural (outside the intestine)**
-
-* Bands and Adhesions — most common cause in adults; from previous surgery, TB peritonitis, PID
-* Hernia — external (inguinal, femoral, umbilical) and internal
-* Volvulus — especially sigmoid volvulus (common in Nigeria/West Africa)
-* Intussusception — most common mechanical obstruction in infants
-* Intra-abdominal tumours — lymphoma, ovarian cysts, teratoma
-
-**B. Causes by Age Group**
-
-**Upper GI**
-
-*   **Infancy & Childhood**: Infantile Hypertrophic Pyloric Stenosis (IHPS), Duodenal atresia / stenosis, Annular pancreas
-*   **Adults**: Gastric cancer, Complicated peptic ulcer, Cancer of head of pancreas, Gallstone
-
-**Lower GI**
-
-*   **Infancy & Childhood**: Jejunal/Ileal atresia, stenosis, Gut malrotation, Intussusception, Hirschsprung's disease, Anorectal malformation, Volvulus
-*   **Adults**: Adhesions, Paralytic ileus, Colorectal carcinoma, Anastomotic stenosis, Sigmoid volvulus
-
-**C. Adynamic (Functional) Causes**
-
-* Post abdominal surgery (paralytic ileus) — most common; physiologic; peristalsis returns: small bowel ~12-24hrs, stomach ~24-48hrs, large bowel ~48-72hrs
-* Peritonitis
-* Hypokalaemia
-* Retroperitoneal haemorrhage
-* Mesenteric arterial thrombosis
-* Spinal cord injury
-
-## Pathophysiology
-
-**A. Mechanical Obstruction**
-
-Regardless of aetiology, the proximal bowel dilates and develops altered motility while the bowel below the obstruction continues normal peristalsis until it is empty, after which it contracts and becomes immobile.
-
-Distension is produced by two factors:
-* **Gas** — significant overgrowth of aerobic and anaerobic organisms results in considerable gas production. After reabsorption of O2 and CO2, the majority is nitrogen (90%) and hydrogen sulphide.
-* **Fluid** — accumulation of various digestive juices within the bowel wall, with excess secreted into the lumen while absorption is retarded.
-
-Progressive cascade:
-Obstruction → Increased proximal peristalsis (colicky pain) → Bowel dilates → Peristaltic strength reduces → Flaccidity and paralysis (protective against vascular damage from increased intraluminal pressure).
-
-Fluid accumulation (3rd space loss) → hypovolaemia → shock. Gas and fluid distension → increased intraluminal pressure → venous congestion → arterial occlusion → ischaemic infarction of bowel wall (mucosa first) → bacterial translocation → bacteraemia → septicaemia → bowel gangrene → perforation → peritonitis.
-
-**B. Adynamic Obstruction**
-
-There is paralysis of intestinal wall musculature. Pain is not a predominant feature. Effortless vomiting may occur. Radiologically, gas-filled loops of intestine are seen throughout with multiple fluid levels (including pelvic gas, unlike mechanical obstruction).
-
-## Clinical Features
-
-**A. Cardinal Signs of Dynamic Obstruction (Classic Quartet)**
-
-* Colicky abdominal pain
-* Abdominal distension
-* Vomiting
-* Absolute constipation (obstipation — no faeces, no flatus)
-
-**TRIAD**
-
-* Upper GI obstruction: Abdominal pain + Vomiting + Distension
-* Lower GI obstruction: Abdominal pain + Distension + Constipation
-
-**B. Features by Level of Obstruction**
-
-| Feature | High SBO | Low SBO | Large Bowel |
-| :--- | :--- | :--- | :--- |
-| **Vomiting** | Early, profuse, rapid dehydration | Delayed | Late (faeculent) |
-| **Distension** | Minimal | Central, pronounced | Early, peripheral/pronounced |
-| **Pain** | Central (periumbilical) | Predominant, central | Mild |
-| **Constipation** | Late | Earlier | Early, pronounced |
-| **AXR (erect)** | Minimal fluid levels | Multiple central fluid levels | Peripheral haustral loops |
-
-## Management — History
-
-**i. Biodata**
-
-* Name, Age, Sex, Address, Occupation
-* Age: Children — congenital malformations; Elderly — tumours
-* Sex: More common in males
-
-**ii. History of Presenting Complaints (Symptom Analysis)**
-
-* **Vomiting**
-  * Duration, mode of onset (gradual or sudden; early onset = small intestinal, late = colonic)
-  * Content: food → fluid (clear/bilious) → faeculent (progression)
-  * Character: projectile or effortless, bilious (distal to ampulla of Vater) or non-bilious (proximal)
-  * Any haematemesis
-* **Abdominal Pain**
-  * Duration, mode of onset
-  * Location: periumbilical (small bowel), suprapubic/hypogastric (large bowel)
-  * Severity: mild (no strangulation) vs severe (strangulation)
-  * Nature: usually colicky, coinciding with peristalsis
-  * Sudden exacerbation and persistence of constant pain suggests perforation
-* **Abdominal Distension**
-  * Present or absent, upper abdomen or generalised
-  * Progressive or intermittent; rate of increase
-* **Constipation**
-  * Relative constipation: passing flatus but no faeces
-  * Absolute constipation (obstipation): no faeces, no flatus
-  * In newborns: has child passed meconium? Normally should pass at least once in first 24hrs and twice daily thereafter
-  * Nature of stool: pellets (rectal tumour), red currant jelly (intussusception), melaena (upper GI bleeding), blood-stained stool
-
-**iii. History Suggestive of Cause**
-
-| Suspected Cause | Suggestive History |
-| :--- | :--- |
-| **Adhesions/Bands** | Previous abdominal surgery, TB, peritonitis, PID, gynaecological procedures |
-| **Hernia** | Previous history of protruding abdominal/groin mass, suddenly becomes irreducible and painful |
-| **Cancer/Tumour** | Weight loss, anorexia, rectal bleeding, tenesmus, easy fatigability, abdominal mass |
-| **Intussusception** | Red currant jelly stool, irritable infant, recent URTI or watery diarrhoea |
-| **Faecal Impaction** | Low residue diet, chronic constipation, hard faeces, painful defaecation |
-| **Stricture** | Previous TB, prolonged diarrhoea disease (e.g. Crohn's) |
-| **Polyposis syndrome** | Similar occurrence in family members |
-
-**iv. History of Complications**
-
-* Children: fever, general body weakness, failure to thrive
-* Adults: fever, general body weakness, metastasis (cough, back pain, right hypochondrial pain)
-
-**v. Other Aspects of History**
-
-* Past medical/surgical history
-* Review of systems
-* In children: perinatal history, nutrition history, immunisation history, developmental milestones
-* Family and social history
-
-## Management — Physical Examination
-
-**i. General Examination**
-
-* Wasting, pallor, jaundice
-* Dehydration — sunken eyes, reduced skin turgor, dry mucous membranes
-* Fever — onset of ischaemia, perforation, or associated inflammatory disease
-* Vital signs: tachycardia, hypotension (shock)
-
-**ii. Abdominal Examination**
-
-* **Inspection**
-  * Gross distension
-  * Visible peristalsis — moving left to right in upper quadrant (gastric outlet obstruction)
-  * Healed surgical incision scars (adhesions)
-  * Hernia orifices — epigastric, umbilical, groin (inguinal/femoral); ALL hernia orifices must be examined
-* **Palpation**
-  * Tenderness — generalised or localised (localised = pending/established ischaemia)
-  * Guarding and rigidity (peritonitis)
-  * Palpable mass:
-    * Left upper quadrant: infant (IHPS); adult (gastric cancer)
-    * Iliac fossa: Hirschsprung's disease (children); faecal impaction, colorectal cancer (adults)
-    * Right upper quadrant: intussusception
-* **Percussion**
-  * Tympanitic or hypertympanitic (gas-filled loops)
-* **Auscultation**
-  * Absent bowel sounds — paralytic ileus or obstruction proximal to ileocaecal valve
-  * Increased, high-pitched, tinkling bowel sounds — obstruction distal to ileocaecal valve
-
-**iii. Digital Rectal Examination**
-
-* Adults: assess tone (patulous or not), swelling size/consistency, nature of stool on finger
-* Children: use little finger or bulb of thermometer
-* Absent anal opening/dimple at site — anorectal malformation
-* Expulsion of foul-smelling stool on removal of examining finger — Fountain's Sign in Hirschsprung's disease
-* Empty rectum may be present in Hirschsprung's disease
-
-**iv. External Genitalia and Other Regions**
-
-* External genitalia may be abnormal in anorectal malformation
-* Children: examine for associated anomalies — CHARGE and VACTERLH syndromes
-
-> [NB] VACTERLH: Vertebral anomaly, Anorectal malformation, Cardiac anomaly, Tracheo-oesophageal anomaly, Renal anomaly, Limb problems, Hydrocephalus
-
-> [NB] CHARGE: Coloboma of eye, Heart problem, Anorectal malformation, Renal anomaly, Genital anomaly, Ear problem of congenital origin
-
-## Management — Investigations
-
-**i. Specific Investigations**
-
-* **Plain Abdominal X-Ray (Erect and Supine)**
-  * Done erect and supine; if too sick to stand, use lateral decubitus view
-  * Multiple air-fluid levels >3 + air cut-off sign + absence of air in expected region = confirms intestinal obstruction
-  > [NOTE] multiple air-filled levels are seen normally within 10 days of intra-abdominal surgery and after drinking carbonated drinks
-  * Air under diaphragm — intestinal perforation (better seen on CXR)
-* **Classic AXR features:**
-  * Erect: multiple air-fluid levels (>3 is significant)
-  * Supine small bowel: centrally located dilated loops, valvulae conniventes (plicae semilunares)
-  * Supine large bowel: peripherally located dilated loops, haustral markings
-  * Single bubble sign — gastric outlet obstruction (IHPS, gastric stenosis, gastric cancer)
-  * Double bubble sign — duodenal atresia
-    ![Double Bubble Sign](/images/notes/double-bubble-sign.png)
-  * Triple bubble sign — jejunal atresia
-  * Adynamic obstruction (paralytic ileus) — bowel gas throughout including in pelvis
-* **Contrast Studies**
-  * Biam Meal + Follow-through (upper GI obstruction): shoulder appearance, string sign, umbrella sign, filling defect
-  * Barium Enema (lower GI obstruction):
-    * Corkscrew appearance — gut malrotation
-    * Coiled spring sign — intussusception
-      ![Coiled Spring Sign](/images/notes/coiled-spring-sign.png)
-    * Champagne glass / inverted umbrella — Hirschsprung's disease
-    * Apple core deformity / filling defect — colorectal cancer
-      ![Apple Core Deformity](/images/notes/apple-core-deformity.png)
-    * Bird beak deformity — volvulus
-      ![Bird Beak Deformity](/images/notes/bird-beak-deformity.png)
-  * Water-soluble contrast (Gastrograffin) preferred when contrast study is required; contraindicated in peritonitis, strangulation, perforation
-* **Abdominal Ultrasound**
-  * Of little importance except in complicated cases (e.g. to locate mass)
-  * Target/Donut sign (transverse view) or Pseudokidney sign (longitudinal view) — intussusception
-    ![Intussusception Target Sign](/images/notes/intussusception-target-sign.png)
-* **Endoscopy**
-  * Upper GI endoscopy + biopsy — gastric outlet obstruction for histological diagnosis
-  * Lower GI endoscopy (proctoscopy, sigmoidoscopy, colonoscopy) — to visualise obstruction site and take biopsy, e.g. Hirschsprung's disease (absent/decreased ganglion cells)
-* **Special Investigations for Neonates**
-  * Invertogram (Wangensteen-Rice) — for anorectal malformation; wait till child is 16-24hrs old, turn upside down, lateral view of pelvis
-  * Cross Table Lateral Radiograph of Pelvis — preferred (avoids respiratory distress of invertogram)
-
-**ii. Supportive Investigations**
-
-* FBC: anaemia (chronic cases, cancer), leucocytosis (infection)
-* Blood electrolytes, urea and creatinine: electrolyte derangement; increased urea (dehydration); alkalosis (high SBO), acidosis (low SBO)
-* Liver function tests: metastasis, paraneoplastic syndrome
-* Grouping and cross-matching — if patient needs transfusion or going for surgery
-* Urinalysis (M/C/S) — especially in lower GI obstruction; check sugar, proteins
-* Chest X-ray — may show elevated diaphragm, free gas under diaphragm
-* ECG — for patients ≥40 years to assess cardiac function
-* Abdominal USS / CT scan — to locate mass
-
-## Management — Treatment
-
-**i. Supportive/Resuscitative Treatment (The 3 TUBES)**
-
-* IV Cannula + Nasogastric (NG) Tube + Urethral Catheter
-* Secure IV access — give IV fluid to rehydrate; patient may be in shock
-* IV Fluid Resuscitation: Normal saline or Ringer's lactate as anti-shock (20ml/kg) if shock present, then maintenance. 
-> [NOTE] avoid dextrose for first 24hrs in adults (raised glucogenic hormones); in children use 4.3% dextrose in 0.18% saline (children prone to hypoglycaemia due to ineffective glycogen storage)
-* Nasogastric tube decompression — to reduce increased intraluminal pressure, prevent aspiration
-* Nil Per Os (NPO/NBM) — to prevent further distension and prepare patient for surgery
-* IV antibiotics — ceftriaxone (gram negatives) + metronidazole/flagyl (anaerobes) — to prevent secondary infections
-* Urethral catheterisation — for hourly urine output monitoring (target >0.5ml/kg/hr)
-* Correct electrolyte imbalance
-* Adequate monitoring of vital signs — initially more frequently
-* Bowel preparation for large bowel obstruction prior to surgery
-* **In Neonates specifically:**
-  * Give Vitamin K 1mg IV/IM at start — to prevent haemorrhagic disease of the newborn
-  * Nurse in thermo-neutral environment — to prevent hypothermia
-> [NOTE] After adequate resuscitation (stable vital signs + optimal hourly urine output), exploratory laparotomy is done. However, in adhesive bowel obstruction, there is room for conservative management first.
-
-**ii. Conservative Management of Adhesive Intestinal Obstruction**
-
-* Continue resuscitative measures; reduce vital sign monitoring to 4-hourly
-* Observe patient for improvement: passing faeces/flatus, decreased abdominal pain, decreased distension, bowel sounds becoming normoactive
-* Once improved, commence oral intake, encourage high-fibre diet long-term
-* Conservative management should rarely continue beyond 72 hours
-* If symptoms worsen, stop conservative management and proceed to exploratory laparotomy
-* **Other conservative measures for specific causes:**
-  * Faecal impaction: soap and water enema +/- osmotic laxative (e.g. Dulcolax)
-  * Chronic intestinal obstruction: enema saponins followed by laparotomy with definitive surgical procedure
-
-**iii. Indications for Surgery**
-
-* Peritonitis
-* Strangulation
-* Persisting shock despite rehydration
-* Failed conservative management
-* Evidence of perforation
-
-**iv. Definitive Surgical Treatment (depends on diagnosis)**
-
-* Exploratory laparotomy + surgical treatment of cause:
-* **By Cause:**
-  * Adhesions — adhesiolysis; only the one causing obstruction is excised; resect non-viable bowel loops + anastomosis
-  * Bands — release/ligate the band
-  * Tumour (benign) — resect, end-to-end anastomosis
-  * Malignant tumours — resection based on blood supply + appropriate anastomosis:
-    * Caecum to right hepatic flexure: Right hemicolectomy
-    * Transverse colon: Transverse colectomy
-    * Descending colon to upper sigmoid: Left hemicolectomy
-    * Lower sigmoid to upper rectum (>15cm from anal verge): Anterior resection
-      ![Anterior Resection](/images/notes/anterior-resection.png)
-    * Rectal tumour <10cm from anal verge: Abdominoperineal resection
-  * Hernia — Herniotomy (children) or Hernioraphy (adults) + resection + end-to-end anastomosis for non-viable bowel
-  * Gastric cancer — subtotal gastrectomy (>50% resected) + gastrojejunostomy, OR Bilroth II operation for antral cancer
-  * Malrotation — Ladd's operation
-    ![Ladd's Procedure](/images/notes/ladds-procedure.png)
-  * Ileal atresia/stenosis — resection and anastomosis
-  * Infantile pyloric stenosis — Ramstedt Pyloromyotomy
-    ![Ramstedt Pyloromyotomy](/images/notes/ramstedt-pyloromyotomy.png)
-  * Duodenal atresia + annular pancreas — duodeno-duodenostomy or gastroduodenostomy
-  * Hirschsprung's disease:
-    * Swenson's operation (rectosigmoidectomy)
-      ![Swenson's Procedure](/images/notes/swensons-procedure.png)
-    * Duhamel Operation (retro-rectal operation)
-    * Soave operation (endorectal operation)
-  * Anorectal malformation:
-    * Low type — anal cutback (anoplasty)
-    * Intermediate and high type — 2-stage operation: 1st stage colostomy; 2nd stage PSARP/Pena's operation (posterior sagittal anorecto-plasty) — done when infant is ~4-6 months old and has attained 10kg
-
-> [NB] Bilroth I: Distal gastrectomy (<50%) + gastroduodenostomy — used for peptic ulcer disease
-
-> [NB] Bilroth II: Distal gastrectomy (<50%) + gastrojejunostomy
-
-## Complications Of Intestinal Obstruction
-
-**Systemic Complications**
-
-* Dehydration and hypovolaemia
-* Electrolyte derangement
-* Shock
-* Acute renal failure
-* Respiratory embarrassment
-
-**Local/Bowel Complications**
-
-* Strangulation → bowel gangrene
-* Bowel perforation
-* Peritonitis
-* Intra-abdominal sepsis
-* Septicaemia
-
-**Post-Operative Complications**
-
-* Anastomotic failure/leakage
-* Anastomotic stenosis
-* Recurrence of adhesion
-* Intraperitoneal abscesses
-* Enterocutaneous fistula
-
-## Specific Conditions
-
-**A. INTUSSUSCEPTION**
-
-Intussusception is a condition where a bowel loop invaginates or telescopes into an adjacent bowel loop. The invaginated bowel is the intussusceptum; the receiving bowel is the intussuscepiens. It is the most common cause of mechanical intestinal obstruction in infants.
-
-**Classification:**
-
-* Jejunojejunal, Ileoileal, Ileocaecal or Ileocolic (most common in children), Colocolic, Colorectal, Prolapsed intussusception
-* Primary/Idiopathic — no pathologic lead point (enlarged Peyer's patches from URTI, gastroenteritis, weaning)
-* Secondary — with pathologic lead point (Meckel's diverticulum — commonest in children, tumour, polyp, haemangioma, intestinal duplication cyst)
-
-**Epidemiology:**
-
-* Idiopathic intussusception: common between 3 months – 3 years; peak age 4-10 months
-* Peyer's patches enlarge due to: viral URTI, viral gastroenteritis (rota, adeno, Norwalk virus), weaning — hence rota virus vaccine is implicated
-
-**Triad of symptoms (30% of infants):**
-
-* Intermittent abdominal pain (irritable cries, raising legs/flexing hips)
-* Vomiting
-* Bloody-mucoid stool (red currant jelly stool)
-
-**Investigations:**
-
-* Abdominal USS: Target/Donut sign (transverse), Pseudokidney sign (longitudinal)
-* Barium enema: Coiled spring sign (diagnostic and sometimes therapeutic)
-* Plain AXR: dilated bowel loops, multiple air-fluid levels
-
-**Treatment:**
-
-* **Non-operative (first 24-48hrs, no peritonitis/gangrene):**
-  * Hydrostatic reduction: normal saline under USS guidance or barium enema under fluoroscopy. Enema tube at height of 100cm from anus (pressure 100cmH2O). Not more than 3 attempts; if fails → surgery
-  * Pneumatic reduction: air insufflation at 80-120mmHg. Safer (less bowel perforation; air reabsorbed if perforation occurs)
-
-* **Operative (when non-operative fails, no facility, sepsis, peritonitis, gangrene):**
-  * Laparotomy via right extended upper transverse incision
-  * Assess bowel viability BEFORE reducing intussusception
-  * Viable: manual reduction by milking intussusceptum from intussuscepiens (never pull apex)
-  * Viable but difficult (oedema): warm saline-soaked towel around for 10min, then reduce
-  * Still impossible/questionable viability: wrap with saline-soaked towel + 100% O2 for 10min; if viable — manual reduction; if not — resection and anastomosis
-  * Non-viable (black, perforated): immediate resection and anastomosis
-  * Post-op: fixation to posterior wall to prevent recurrence (preferred over simple reduction)
-
-For secondary intussusception: resection and anastomosis always — non-operative or simple manual reduction not done.
-
-**B. ADHESIVE BOWEL OBSTRUCTION**
-
-Adhesions are classified as early (fibrinous) or late (fibrous). Practically: 'easy' flimsy vs 'difficult' dense. Postoperative adhesions causing obstruction usually involve the lower small bowel. Appendicitis and gynaecological operations are the most common precursors.
-
-**Common Causes of Adhesion Formation:**
-
-* Ischaemic areas, vascular occlusion
-* Sites of anastomoses
-* Reperitonealisation of raw areas
-* Foreign material — talc, starch, gauze, silk
-* Infection — peritonitis, tuberculosis
-* Inflammatory conditions — Crohn's disease, radiation enteritis
-
-**Prevention of Adhesions:**
-
-* Good surgical technique
-* Washing peritoneal cavity with saline to remove clots
-* Minimising contact with gauze
-* Covering anastomosis and raw peritoneal surfaces
-* Instillation of anti-adhesion agents (PVP, chondroitin, hyaluronidase, hydrocortisone, silicone, dextran, etc.) — no single agent has been shown to be particularly effective
-
-**Treatment of Recurrent Adhesive Obstruction:**
-
-* Repeat adhesiolysis (enterolysis) alone
-* Noble's plication operation
-* Charles-Phillips transmesenteric plication
-* Intestinal intubation (Baker's tube)
-
-**C. APPENDICEAL MASS — OSCHNER-SHERREN REGIMEN (Appendix)**
-
-Though not directly intestinal obstruction, it is included given its appearance in the source material:
-* NPO, IV fluids, IV antibiotics, IV analgesics
-* Hourly pulse and 4-hourly temperature
-* Outline mass with skin marker to monitor daily change in size
-* Monitor abdominal tenderness
-
-If improves (normal pulse, no fever, resolving/resolved mass, no tenderness): plan interval appendectomy in 6-8 weeks.
-If persists/worsens: abandon conservative management and surgically intervene.
-
-**Signs of appendiceal abscess formation:**
-
-* Continued increase or failure to decrease in mass size
-* Increasing/persisting pain, tenderness, guarding
-* Swinging fever
-* Rising pulse rate
-
-Treatment of appendiceal abscess: Drainage of abscess with or without appendectomy + peritoneal lavage.
-
-## Key Points & Clinical Pearls
-
-*   In Nigeria, the most common cause of mechanical bowel obstruction in adults is postoperative adhesions, followed by obstructed external hernias and sigmoid volvulus.
-*   Always examine all hernia orifices in a patient with suspected intestinal obstruction.
-*   The presence of fever, tachycardia, and localized tenderness should raise suspicion of strangulation.
-*   Aggressive fluid resuscitation is the cornerstone of initial management.
-> [PEARL] A patient with colicky abdominal pain, vomiting, distension and absolute constipation is obstructed until proven otherwise.
-> [PEARL] In a child with suspected intussusception, the absence of the classic triad does not rule out the diagnosis. Ultrasound is the investigation of choice.
-
-## Practice Essay Questions
-
-1.  A 65-year-old man with a known inguinal hernia presents with a 2-day history of colicky abdominal pain, vomiting, and abdominal distension. Discuss your initial management and the definitive surgical options.
-2.  Discuss the aetiology and pathophysiology of sigmoid volvulus, with particular reference to the Nigerian context. Outline the principles of its management.
-3.  A 4-month-old infant presents with episodes of inconsolable crying and has passed a stool mixed with blood and mucus. Discuss the differential diagnosis and management.
 `;
 
-export const generateStudyNote = async (specialtyName: string, topicTitle: string): Promise<string> => {
-  if (topicTitle === 'Acute Appendicitis') {
-    return Promise.resolve(acuteAppendicitisContent);
-  } else if (topicTitle === 'Intestinal Obstruction') {
-    return Promise.resolve(intestinalObstructionContent);
-  }
-  return Promise.resolve(`# ${topicTitle}\n\nContent coming soon...`);
-};
+const defaultContent = `
+# HERO_START
+Title: Topic Not Found
+Subtitle: Please check back later.
+# HERO_END
 
-export interface QuizQuestion {
-  question: string;
-  options: string[];
-  answer: string;
-  explanation: string;
-}
+## Content is not available for this topic yet.
 
-export const generateQuiz = async (specialtyName: string, topicTitle: string, questionCount: number = 5): Promise<QuizQuestion[]> => {
-  try {
-    const prompt = `
-      Generate ${questionCount} high-yield multiple-choice questions (MCQs) for medical students regarding \"${topicTitle}\" in \"${specialtyName}\".
-      Focus on clinical scenarios, diagnosis, and management relevant to the Nigerian context.
-    `;
+We are working hard to expand our content library. Please check back soon!
+`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              question: { type: Type.STRING },
-              options: { 
-                type: Type.ARRAY,
-                items: { type: Type.STRING }
-              },
-              answer: { 
-                type: Type.STRING,
-                description: "The correct option text, must match one of the options exactly."
-              },
-              explanation: { type: 'string' }
-            },
-            required: ["question", "options", "answer", "explanation"]
-          }
-        }
-      }
-    });
 
-    if (response.text) {
-      return JSON.parse(response.text) as QuizQuestion[];
+export const generateQuiz = async (specialty: string, topic: string, count: number): Promise<QuizQuestion[]> => {
+  console.log(`Generating quiz for ${topic} in ${specialty}`);
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  // This is a mock. In a real app, you'd generate questions based on the topic.
+  const quiz: QuizQuestion[] = [
+    {
+      "question": "A 22-year-old male presents with a 12-hour history of abdominal pain that started around his umbilicus and has now moved to the right iliac fossa. What is the most likely diagnosis?",
+      "options": [
+        "Diverticulitis",
+        "Acute Appendicitis",
+        "Gastroenteritis",
+        "Renal Colic"
+      ],
+      "answer": "Acute Appendicitis",
+      "explanation": "This classic migration of pain from periumbilical to the right iliac fossa is a hallmark feature of acute appendicitis, caused by the initial visceral and subsequent somatic peritoneal irritation."
+    },
+    {
+      "question": "What is Rovsing's sign?",
+      "options": [
+        "Pain in the RIF on extension of the right hip",
+        "Pain in the RIF on palpation of the LIF",
+        "Pain on internal rotation of the flexed right hip",
+        "Tenderness at two-thirds of the way from the umbilicus to the ASIS"
+      ],
+      "answer": "Pain in the RIF on palpation of the LIF",
+      "explanation": "Rovsing's sign suggests peritoneal irritation. Palpating the left iliac fossa stretches the peritoneum, causing pain at the site of inflammation in the right iliac fossa."
+    },
+    {
+      "question": "Which component is NOT part of the Alvarado score?",
+      "options": [
+        "Migration of pain",
+        "Anorexia",
+        "Rebound tenderness",
+        "C-Reactive Protein level"
+      ],
+      "answer": "C-Reactive Protein level",
+      "explanation": "The Alvarado score (MANTRELS) uses clinical and basic laboratory findings. It includes Leukocytosis (raised white cells) but not CRP, which is a separate inflammatory marker."
+    },
+    {
+      "question": "What is the primary cause of acute appendicitis?",
+      "options": [
+        "Bacterial infection",
+        "Viral infection",
+        "Luminal obstruction",
+        "Abdominal trauma"
+      ],
+      "answer": "Luminal obstruction",
+      "explanation": "The pathophysiology of appendicitis begins with obstruction of the narrow appendiceal lumen, most commonly by lymphoid hyperplasia or a faecolith. This leads to a cascade of inflammation."
+    },
+    {
+        "question": "Which imaging modality is most commonly used as the 'gold standard' for diagnosing appendicitis in non-pregnant adults?",
+        "options": [
+          "Abdominal X-ray",
+          "Ultrasound",
+          "CT Scan",
+          "MRI"
+        ],
+        "answer": "CT Scan",
+        "explanation": "CT scanning has the highest sensitivity and specificity for diagnosing acute appendicitis in adults. It is excellent at identifying the inflamed appendix and alternative causes of abdominal pain."
+    },
+    {
+        "question": "A patient with suspected appendicitis feels pain when the examiner extends the patient's right hip. What is this sign called?",
+        "options": [
+            "Psoas sign",
+            "Obturator sign",
+            "Rovsing's sign",
+            "Murphy's sign"
+        ],
+        "answer": "Psoas sign",
+        "explanation": "The Psoas sign is elicited by extending the patient's hip or asking them to flex the hip against resistance. Pain suggests the inflamed appendix is in a retrocaecal position, irritating the psoas muscle."
+    },
+    {
+        "question": "What is the most common cause of appendiceal obstruction in children?",
+        "options": [
+            "Faecolith",
+            "Lymphoid hyperplasia",
+            "Foreign body",
+            "Tumour"
+        ],
+        "answer": "Lymphoid hyperplasia",
+        "explanation": "Lymphoid hyperplasia, often following a viral illness, is the most common cause of luminal obstruction in children and young adults, leading to appendicitis."
+    },
+    {
+        "question": "Which of the following is considered a complication of a perforated appendix?",
+        "options": [
+            "Mesenteric adenitis",
+            "Appendix mass",
+            "Meckel's diverticulitis",
+            "Intussusception"
+        ],
+        "answer": "Appendix mass",
+        "explanation": "An appendix mass (or phlegmon) is a complication where the omentum and surrounding bowel adhere to the inflamed, often perforated, appendix in an attempt to wall off the infection."
+    },
+    {
+        "question": "In the Alvarado score for appendicitis, how many points are given for tenderness in the right iliac fossa?",
+        "options": [
+            "1 point",
+            "2 points",
+            "3 points",
+            "0 points"
+        ],
+        "answer": "2 points",
+        "explanation": "Right iliac fossa tenderness is a key sign in appendicitis and is weighted with 2 points in the Alvarado scoring system, the most of any single component."
+    },
+    {
+        "question": "A female patient of childbearing age presents with RIF pain. Which investigation is crucial to perform early?",
+        "options": [
+            "CT scan",
+            "Urine dipstick",
+            "Pregnancy test",
+            "Abdominal X-ray"
+        ],
+        "answer": "Pregnancy test",
+        "explanation": "It is essential to rule out an ectopic pregnancy, which can present with similar symptoms to appendicitis and is a life-threatening emergency. A pregnancy test is a mandatory first step."
     }
-    return [];
-  } catch (error) {
-    console.error("Gemini Quiz Error:", error);
-    throw new Error("Failed to generate quiz.");
-  }
+  ];
+  
+  // Return a random selection of questions
+  return quiz.sort(() => 0.5 - Math.random()).slice(0, count);
 };

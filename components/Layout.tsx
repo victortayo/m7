@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, Book, Home, X, Circle, List, ChevronRight, FileText, Download, Layers } from 'lucide-react';
+import { Search, Book, Home, X, Circle, List, ChevronRight, FileText, Download, Layers, ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarNav {
@@ -41,6 +42,7 @@ const Layout: React.FC<LayoutProps> = ({
   const [isTopicsDrawerOpen, setIsTopicsDrawerOpen] = useState(false);
   const [isTOCDrawerOpen, setIsTOCDrawerOpen] = useState(false);
   const [showFloatingButtons, setShowFloatingButtons] = useState(true);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const mainScrollRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -57,6 +59,12 @@ const Layout: React.FC<LayoutProps> = ({
       scrollTimeoutRef.current = setTimeout(() => {
         setShowFloatingButtons(true);
       }, 300);
+
+      if (mainScroller.scrollTop > 400) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
     };
 
     mainScroller.addEventListener('scroll', handleScroll);
@@ -89,6 +97,10 @@ const Layout: React.FC<LayoutProps> = ({
     }
     
     setIsTOCDrawerOpen(false);
+  };
+
+  const scrollToTop = () => {
+    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -264,6 +276,21 @@ const Layout: React.FC<LayoutProps> = ({
              >
                <Layers size={20} />
              </motion.button>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showBackToTop && (
+            <motion.button
+              onClick={scrollToTop}
+              className="fixed bottom-20 right-5 z-[90] bg-slate-900 text-white p-3 rounded-full shadow-xl shadow-slate-900/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              aria-label="Back to top"
+            >
+              <ArrowUp size={24} />
+            </motion.button>
           )}
         </AnimatePresence>
 

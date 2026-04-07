@@ -1,10 +1,9 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { Book, Mic, FileBarChart2 } from 'lucide-react';
 
 const Downloads: React.FC = () => {
   return (
-    <Layout title="Downloads">
+    <div className="space-y-10">
       <div className="text-center">
         <h1 className="text-4xl font-display font-bold text-ink mb-4">Downloads</h1>
         <p className="text-slate-500 max-w-lg mx-auto mb-12">
@@ -12,24 +11,22 @@ const Downloads: React.FC = () => {
         </p>
       </div>
 
-      <div className="space-y-10">
-        <DownloadSection 
-          icon={<Book size={24} className="text-accent-blue" />} 
-          title="Specialty Books"
-          description="Download comprehensive PDF books for each specialty, perfect for offline study."
-        />
-        <DownloadSection 
-          icon={<Mic size={24} className="text-accent-blue" />} 
-          title="Audio Notes"
-          description="Listen to high-yield audio versions of the notes on the go."
-        />
-        <DownloadSection 
-          icon={<FileBarChart2 size={24} className="text-accent-blue" />} 
-          title="PowerPoint Slides"
-          description="Get presentation-ready slides for your tutorials and group study sessions."
-        />
-      </div>
-    </Layout>
+      <DownloadSection 
+        icon={<Book size={24} className="text-accent-blue" />} 
+        title="Specialty Books"
+        description="Download comprehensive PDF books for each specialty, perfect for offline study."
+      />
+      <DownloadSection 
+        icon={<Mic size={24} className="text-accent-blue" />} 
+        title="Audio Notes"
+        description="Listen to high-yield audio versions of the notes on the go."
+      />
+      <DownloadSection 
+        icon={<FileBarChart2 size={24} className="text-accent-blue" />} 
+        title="PowerPoint Slides"
+        description="Get presentation-ready slides for your tutorials and group study sessions."
+      />
+    </div>
   );
 };
 
