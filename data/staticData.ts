@@ -12,7 +12,7 @@ export const SPECIALTIES: Specialty[] = [
         id: 'appendicitis',
         title: 'Acute Appendicitis',
         specialty: 'Surgery',
-        summary: `### Definition\nAcute appendicitis is inflammation of the appendix, usually due to obstruction.\n\n### Epidemiology\nIt is most common in adolescents and young adults (10-19 years) with a lifetime risk of about 7-8%.\n\n### Presentation\nClassic features include periumbilical pain migrating to the right iliac fossa (RIF), anorexia, nausea, and low-grade fever.\n\n### Management\nLaparoscopic appendicectomy is the standard treatment.`,
+        summary: `### Definition\nInflammation of the vermiform appendix. A surgical emergency.\n\n### Peak Incidence\n2nd-3rd decade of life.\n\n### Classic Presentation\nMigratory pain (periumbilical → RIF), anorexia, nausea/vomiting, low-grade fever.\n\n### Examination\nTenderness at McBurney\'s point, guarding, rebound, Rovsing\'s sign.\n\n### Key signs by position\nPsoas sign → retrocaecal; Obturator sign → pelvic; Dunphy\'s sign → retrocaecal.\n\n### Investigations\nFBC (leucocytosis), urinalysis, USS (first-line imaging), CT if equivocal.\n\n### Alvarado Score\n7-10 = likely appendicitis; 5-6 = equivocal; <5 = unlikely.\n\n### Definitive Treatment\nAppendicectomy (open or laparoscopic).\n\n### Appendiceal Mass\nManage conservatively with Ochsner-Sherren regimen; interval appendicectomy at 6-8 weeks.\n\n### Perforation Complications\nPeritonitis, abscess, portal pyaemia — requires urgent surgery.\n\n### Histology\nAlways send appendix for histology post-operatively.`,
         tags: ['high-yield', 'emergency'],
       },
       {
